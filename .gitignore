@@ -1,0 +1,14 @@
+.idea/
+node_modules/
+/log/
+/config.js
+/lib/games.json
+/google_creds.json
+/npm-debug.log
+/temp/
+/logs/
+/npm-debug.log.*
+/subscribers
+/bttvEmotes.json
+/cheerActions.json
+/twitchEmotes.json

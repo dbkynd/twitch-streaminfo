@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@4.0.0/extras/css/emojione.min.css" />
+    <link rel="stylesheet" href="stylesheets/open_sans.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-socket-io/0.7.0/socket.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+    <script type="text/javascript">
+        const editor = <%= editor %>;
+    </script>
+    <script src="javascripts/angularApp.js"></script>
+</head>
+
+<body ng-controller="indexController as ctrl">
+    <div class="upper">
+        <div class="column">
+            <div class="tips">
+                <ul>
+                    <li ng-show="!ctrl.tips || ctrl.tips.length === 0">
+                        <div class="time hide">Date</div>
+                        <span class="username">Tips</span>
+                    </li>
+                    <li ng-repeat="tip in ctrl.tips | orderBy:'-timestamp' track by tip._id" ng-click="ctrl.clearItem(tip, 'tips')"
+                        ng-class="{ 'uncleared': !tip.cleared }">
+                        <div class='time'>{{ctrl.time(tip.timestamp)}}</div>
+                        <span class='username'>{{tip.name}}
+                            <span class='amount'>{{tip.amount}}</span>
+                        </span>
+                        <div class='message' ng-show="tip.message" ng-bind-html="ctrl.toTrustedHTML(tip.message)"></div>
+                        <div class='email'>
+                            <span class='address' ng-click="ctrl.showEmail(tip)">
+                                {{tip.showEmail ? tip.email || 'No email provided' : 'Show email'}}
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="column">
+            <div class="subs">
+                <ul>
+                    <li ng-show="!ctrl.subs || ctrl.subs.length === 0">
+                        <div class="time hide">Date</div>
+                        <span class="username">Subs</span>
+                    </li>
+                    <li ng-repeat="sub in ctrl.subs | orderBy:'-timestamp' track by sub._id" ng-click="ctrl.clearItem(sub, 'subscriptions')"
+                        ng-class="{ 'uncleared': !sub.cleared }">
+                        <div class='time'>{{ctrl.time(sub.timestamp)}}</div>
+                        <div class='message' ng-show="sub.type === 'subgift'">
+                            <span class="gifter">{{sub.name}}</span> gifted:
+                        </div>
+                        <div class='message' ng-show="sub.type === 'submysterygift'">
+                            <span class="gifter">{{sub.name}}</span> gifted
+                            <span class='amount'>{{sub.giftCount}}</span>
+                            ({{sub.tier}})
+                            sub{{sub.giftCount > 1 ? 's' : ''}} to:
+                        </div>
+                        <div ng-show="sub.type !== 'submysterygift'">
+                            <span class='username'>{{sub.recipientName || sub.name}}
+                                <span class='amount'>{{sub.months}}</span>
+                                <span class='year' ng-show="ctrl.year(sub.months)">
+                                    <img src="https://discordapp.com/assets/088958b946cca5e593f4ca8b4bfe2550.svg">
+                                </span>
+                            </span>
+                        </div>
+                        <div class='message' ng-hide="sub.type === 'submysterygift'" ng-show="sub.message" ng-bind-html="ctrl.toTrustedHTML(sub.message)"></div>
+                        <div class='message' ng-show="sub.type === 'submysterygift'">
+                            <div ng-repeat="recipient in sub.recipients | orderBy:'name'" class="recipient">
+                                <span class='username'>{{recipient.name}}
+                                    <span class='amount'>{{recipient.months}}</span>
+                                    <span class='year' ng-show="ctrl.year(recipient.months)">
+                                        <img src="https://discordapp.com/assets/088958b946cca5e593f4ca8b4bfe2550.svg">
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class='prime' ng-show="sub.isPrime">
+                                <img src='https://static-cdn.jtvnw.net/badges/v1/a1dd5073-19c3-4911-8cb4-c464a7bc1510/1'>
+                            </div>
+
+                            <div class='subTier'>
+                                <span class='subGift' ng-show="sub.type === 'subgift' || sub.type === 'submysterygift'">
+                                    <img class="gift" src="/images/gift-icon.png"></span>
+                                {{sub.tierAmount}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="column">
+            <div class="cheers">
+                <ul>
+                    <li ng-show="!ctrl.cheers || ctrl.cheers.length === 0">
+                        <div class="time hide">Date</div>
+                        <span class="username">Cheers</span>
+                    </li>
+                    <li ng-repeat="cheer in ctrl.cheers | orderBy:'-timestamp' track by cheer._id" ng-click="ctrl.clearItem(cheer, 'cheers')"
+                        ng-class="{ 'uncleared': !cheer.cleared }">
+                        <div class='time'>{{ctrl.time(cheer.timestamp)}}</div>
+                        <span class='username'>{{cheer.name}}
+                            <span class='amount'>{{cheer.amount}}</span>
+                        </span>
+                        <div class='message' ng-show="cheer.message" ng-bind-html="ctrl.toTrustedHTML(cheer.message)"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="gradient"></div>
+    </div>
+    <div class="lower">
+        <div class="column">
+            <div class='hosts'>
+                <ul>
+                    <li ng-show="!ctrl.hosts || ctrl.hosts.length === 0">
+                        <div class="time hide">Date</div>
+                        <span class="username">Hosts</span>
+                    </li>
+                    <li ng-repeat="host in ctrl.hosts | orderBy:'-timestamp' track by host._id" ng-click="ctrl.clearItem(host, 'hosts')"
+                        ng-class="{ 'uncleared': !host.cleared }">
+                        <div class='time'>{{ctrl.time(host.timestamp)}}</div>
+                        <span class='username'>{{host.name}}</span>
+                        {{host.isRaid ? 'raided' : 'hosted'}} with
+                        <span class='amount'>{{host.viewers}}</span>
+                        viewer{{host.viewers === 1 ? '' : 's'}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="column">
+            <div class="save_note">
+                <textarea ng-model="ctrl.note" placeholder="Notes..." ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }"></textarea>
+                <div class="buttons">
+                    <button ng-click="ctrl.saveNote()" class="save" ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }">Save
+                    </button>
+                    <button ng-click="ctrl.clearNote()" class="clear" ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }">Clear
+                    </button>
+                    <span class="save_reply" ng-class="{ ok: ctrl.saveNoteOk, error: ctrl.saveNoteError}"></span>
+                    <button class="marker" ng-click="ctrl.addMarker()">Add Marker</button>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class='frontPage' ng-show="ctrl.status.onFrontPage">
+                <ul>
+                    <li>
+                        <div class="time hide">Date</div>
+                        <span class="username">You are on the Front Page!<img src="https://static-cdn.jtvnw.net/emoticons/v1/88/3.0"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="gradient"></div>
+    </div>
+    <div class="channel_controls">
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.slowEnabled" ng-checked="ctrl.slowEnabled" ng-change="ctrl.chatCommand('slow', ctrl.slowEnabled)">
+                <span class="slider round"><span>{{ctrl.slowTime()}}</span></span>
+            </label>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.followersEnabled" ng-checked="ctrl.followersEnabled" ng-change="ctrl.chatCommand('followers', ctrl.followersEnabled)">
+                <span class="slider round"><span>{{ctrl.followersonlyTime()}}</span></span>
+            </label>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.status.channel.subscribers" ng-checked="ctrl.status.channel.subscribers"
+                    ng-change="ctrl.chatCommand('subscribers', ctrl.status.channel.subscribers)">
+                <span class="slider round"><span>Sub Mode</span></span>
+
+            </label>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.status.channel.r9kbeta" ng-checked="ctrl.status.channel.r9kbeta"
+                    ng-change="ctrl.chatCommand('r9kbeta', ctrl.status.channel.r9kbeta)">
+                <span class="slider round"><span>R9K Mode</span></span>
+            </label>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.status.channel.emoteonly" ng-checked="ctrl.status.channel.emoteonly"
+                    ng-change="ctrl.chatCommand('emoteonly', ctrl.status.channel.emoteonly)">
+                <span class="slider round"><span>Emote Only</span></span>
+            </label>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" ng-model="ctrl.status.raidMode" ng-checked="ctrl.status.raidMode" ng-change="ctrl.toggleRaidMode(ctrl.status.raidMode)">
+                <span class="slider round"><span>Raid Mode</span></span>
+            </label>
+        </div>
+    </div>
+    <div class="statusBar">
+        <img src="/images/restart.png" ng-click="ctrl.restart()" title="Restart Server">
+        <span class="statusBarSpacer" ng-class="{connected: ctrl.status.websocket}">WebSocket</span>
+        <span ng-class="{connected: ctrl.status.app.tipsWs}">StreamElements Tips</span>
+        <span ng-class="{connected: ctrl.status.app.twitchIrc}">Twitch Chat</span>
+        <span ng-class="{connected: ctrl.status.app.twitchPs}">Twitch PS</span>
+        <span ng-class="{connected: ctrl.status.app.chatBot}">
+            <%= botName %> Bot</span>
+        <span class="followers">{{ctrl.followers}}</span>
+    </div>
+</body>
+
+</html>

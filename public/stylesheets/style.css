@@ -1,0 +1,455 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 16px "Open Sans", sans-serif;
+  background: #141414;
+  color: #fff;
+  margin: 10px;
+  overflow: hidden;
+}
+
+.statusBar {
+  font-size: 11px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  color: #fff;
+  opacity: 0.9;
+  background: #232426;
+  padding: 10px;
+  z-index: 3;
+}
+
+.statusBar span {
+  margin: 3px;
+  padding: 2px 10px;
+  background: #e83c3c;
+  opacity: 0.85;
+  border-radius: 5px;
+  user-select: none;
+  cursor: default;
+}
+
+.connected {
+  background: #3d7ba6 !important;
+}
+
+.upper {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+}
+
+.lower {
+  position: relative;
+  height: 290px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-top: 5px solid rgba(249, 215, 26, 0.8);
+  padding-top: 10px;
+}
+
+.column {
+  height: 100%;
+  width: 22.5em;
+  overflow: hidden;
+  float: left;
+}
+
+.column > div {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 20px;
+}
+
+.column ul {
+  list-style-type: none;
+}
+
+.column li {
+  position: relative;
+  color: #aeb2b4;
+  background: #323436;
+  margin-bottom: 8px;
+  border-left: 8px solid #3d7ba6;
+  opacity: 0.85;
+  padding: 0 12px 8px;
+  cursor: default;
+}
+
+.column li:nth-child(1),
+.column li:nth-child(2) {
+  border-left: 8px solid #f9d71ae8 !important;
+}
+
+.time,
+.email {
+  text-align: right;
+  margin-right: 6px;
+  font-size: 11px;
+  position: relative;
+  left: 13px;
+}
+
+.time {
+  margin-bottom: -3px;
+}
+
+.time.hide {
+  margin-bottom: -9px;
+  visibility: hidden;
+}
+
+.email {
+  position: relative;
+  top: 10px;
+  margin-top: -10px;
+  margin-bottom: 5px;
+}
+
+.address {
+  cursor: pointer;
+}
+
+.tips,
+.subs {
+  margin-right: 10px;
+}
+
+.username,
+.amount,
+.count {
+  font-size: 18px;
+}
+
+.message {
+  margin-top: 3px;
+  font-size: 14px;
+  word-wrap: break-word;
+  margin-bottom: 5px;
+  line-height: 20px;
+}
+
+.amount {
+  color: #f9d71a;
+}
+
+.channel_controls {
+  color: #000;
+  position: absolute;
+  bottom: 40px;
+  width: 99%;
+  text-align: center;
+  z-index: 3;
+  font-size: 12px;
+}
+
+.channel_controls > div {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 145px;
+  height: 26px;
+  text-align: center;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #adadad;
+  -webkit-transition: 0.8s;
+  transition: 0.8s;
+  border-radius: 34px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  -webkit-transition: 0.8s;
+  transition: 0.8s;
+  z-index: 1;
+  border: 1px solid #9c9c9c;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #f9d71a;
+}
+
+input:checked + .slider::before {
+  -webkit-transform: translateX(118px);
+  -ms-transform: translateX(118px);
+  transform: translateX(118px);
+}
+
+.slider > span {
+  position: relative;
+  top: 5px;
+}
+
+.bit_badge img {
+  height: 18px;
+  position: relative;
+  top: 4px;
+  margin-right: 3px;
+}
+
+.tier_0 {
+  color: #f9d71a;
+}
+
+.tier_1 {
+  color: #979797;
+}
+
+.tier_100 {
+  color: #9c3ee8;
+}
+
+.tier_1000 {
+  color: #1db2a5;
+}
+
+.tier_5000 {
+  color: #0099fe;
+}
+
+.tier_10000 {
+  color: #f43021;
+}
+
+.tier_100000 {
+  color: #ffcb13;
+}
+
+.username {
+  color: #fff;
+}
+
+.upper .gradient {
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: -webkit-linear-gradient(top, rgba(20, 20, 20, 0) 0%, rgba(20, 20, 20, 1) 100%);
+}
+
+.lower .gradient {
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 280px;
+  background: -webkit-linear-gradient(top, rgba(20, 20, 20, 0) 0%, rgba(20, 20, 20, 1) 100%);
+}
+
+.uncleared {
+  background: #6441a4 !important;
+}
+
+.prime {
+  position: absolute;
+  right: 3px;
+  bottom: -2px;
+}
+
+.year img,
+.prime img {
+  height: 14px;
+}
+
+.year {
+  position: relative;
+  top: 1px;
+}
+
+.subTier {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  color: #f9d71a;
+  font-size: 14px;
+}
+
+.frontPage img {
+  height: 28px;
+  margin-left: 10px;
+  position: absolute;
+  top: 8px;
+}
+
+.emote {
+  height: 24px;
+  position: relative;
+  top: 4px;
+  margin: -5px 1px;
+}
+
+.statusBar img {
+  position: absolute;
+  height: 18px;
+  cursor: pointer;
+  left: 6px;
+  top: 8px;
+}
+
+.statusBar img:active {
+  position: absolute;
+  top: 9px;
+}
+
+.statusBarSpacer {
+  margin-left: 20px !important;
+}
+
+.gift {
+  height: 14px;
+}
+
+.followers {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  background-color: #4e9545 !important;
+}
+
+.gifter {
+  color: #fff;
+}
+
+.save_note {
+  width: 100%;
+}
+
+.save_note textarea {
+  width: 100%;
+  height: 5em;
+  font-size: 16px;
+  resize: vertical;
+  background-color: #323436;
+  color: #aeb2b4;
+  border-color: #4b4d4f;
+  padding: 5px;
+  box-sizing: border-box;
+  min-height: 50px;
+}
+
+button {
+  outline: none;
+  border: none;
+  color: #fff;
+  padding: 6px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  user-select: none;
+}
+
+button:active {
+  position: relative;
+  top: 1px;
+  outline: none;
+  border: none;
+}
+
+.save {
+  background-color: #4caf50;
+}
+
+.clear {
+  background-color: #e83c3c;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
+
+.save_reply {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 12px;
+  position: relative;
+  bottom: 12px;
+}
+
+.ok {
+  background-color: #4caf50;
+}
+
+.error {
+  background-color: #e83c3c;
+}
+
+.buttons {
+  position: relative;
+}
+
+.marker {
+  background-color: #3d7ba6;
+  position: absolute;
+  right: 0;
+}
+
+.recipient span {
+  font-size: 14px;
+}
+
+.recipient:hover {
+  background: #515459;
+}
+
+.uncleared .recipient:hover {
+  background: #8d5ce7;
+}
+
+.recipient:last-child {
+  margin-bottom: 6px;
+}
+
+.emojione {
+  min-height: auto;
+  min-width: auto;
+  height: 18px;
+}
+
+.subs .amount {
+  font-size: 16px;
+}
+
+.tips .message {
+  margin-bottom: 0;
+}
+
+.subs .recipient .amount {
+  font-size: 13px;
+}
