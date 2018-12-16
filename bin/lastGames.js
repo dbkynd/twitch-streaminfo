@@ -17,6 +17,7 @@ const gamesToNotSave = [
   'E3 2018',
   'E3 2019',
   'Just Chatting',
+  'Special Events',
 ];
 
 function mutateName(name) {
