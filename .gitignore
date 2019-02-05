@@ -12,3 +12,5 @@ node_modules/
 /bttvEmotes.json
 /cheerActions.json
 /twitchEmotes.json
+.nuxt
+.env

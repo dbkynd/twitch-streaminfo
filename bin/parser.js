@@ -45,7 +45,7 @@ module.exports = {
     let recipients = null;
     if (entry.data['msg-id'] === 'submysterygift' && entry.recipients) {
       recipients = entry.recipients.map(recipient => {
-        const months = count(recipient['msg-param-months']);
+        const months = count(recipient['msg-param-cumulative-months']);
         return {
           name: utils.displayName(recipient['msg-param-recipient-user-name'],
             recipient['msg-param-recipient-display-name']),
@@ -53,7 +53,8 @@ module.exports = {
         };
       });
     }
-    const months = count(entry.data['msg-param-months']);
+    const months = count(entry.data['msg-param-cumulative-months']);
+    const showStreak = boolean(entry.data['msg-param-should-share-streak']);
     return {
       _id: entry._id,
       cleared: entry.cleared,
@@ -69,6 +70,7 @@ module.exports = {
       message: parseEmojiOne(processEmotes(message, emotes)),
       recipients,
       giftCount: count(entry.data['msg-param-mass-gift-count']),
+      streak: showStreak ? count(entry.data['msg-param-streak-months']) : null,
     };
   },
   tip: entry => {
@@ -191,4 +193,12 @@ function getTierAmount(value) {
 function count(value) {
   if (value === true) return 1;
   return value;
+}
+
+function boolean(value) {
+  if (value === 'true') return true;
+  if (value === '1') return true;
+  if (value === 1) return true;
+  if (value === true) return true;
+  return false;
 }
