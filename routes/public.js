@@ -9,6 +9,9 @@ const liveSubs = require('../bin/liveSubs');
 const raidmode = require('../bin/raidmode');
 const report = require('../bin/report');
 const status = require('../bin/status');
+const request = require('node-fetch');
+const config = require('../config');
+const { get } = require('lodash');
 require('moment-timezone');
 
 router.get('/uptime', (req, res, next) => { // eslint-disable-line no-unused-vars
@@ -18,6 +21,32 @@ router.get('/uptime', (req, res, next) => { // eslint-disable-line no-unused-var
 router.get('/timestamp', (req, res, next) => { // eslint-disable-line no-unused-vars
   res.send(uptime.getTimestamp());
 });
+
+router.get('/song', (req, res, next) => {
+  request(
+    `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=2&user=annemunition&api_key=${
+      config.lastfm.apiKey
+      }&format=json`,
+  )
+    .then(res => res.json())
+    .then(data => {
+      const tracks = get(data, 'recenttracks.track', null)
+      if (!tracks) return res.status(200).send('Unable to get tracks.')
+      const nowPlaying = tracks.find(track =>
+        get(track, '@attr.nowplaying', null),
+      )
+      if (!nowPlaying) res.status(200).send('No song is currently playing.')
+      const str = `${get(nowPlaying, 'name', 'Track')} by ${get(
+        nowPlaying,
+        'artist.#text',
+        'Artist',
+      )}`
+      res.status(200).send(str)
+    })
+    .catch(() => {
+      res.status(200).send('LastFM Error');
+    });
+})
 
 router.get('/games', (req, res, next) => { // eslint-disable-line no-unused-vars
   req.db.Games.find({}).sort({ _id: -1 })
