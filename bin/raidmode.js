@@ -26,6 +26,7 @@ function setFilter(enabled) {
             emotes: { enabled },
           },
         });
+        body.banphrases = body.banphrases.map(x => x._id);
         return fetch(`https://api.streamelements.com/kappa/v2/bot/filters/${config.streamElements.id}`, {
           method: 'PUT',
           headers: {
