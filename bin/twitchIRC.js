@@ -170,8 +170,12 @@ module.exports = io => {
 
     // Auto raid mode
     twitch.say(config.twitch.channel, '!raidmode on (auto)');
+    const followersAmount = status.channel.followersonly;
+    const followersEnabled = followersAmount !== -1;
+    if (followersEnabled) twitch.say(config.twitch.channel, '/followersoff');
     setTimeout(() => {
       twitch.say(config.twitch.channel, '!raidmode off (auto)');
+      if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
     }, 1000 * 60 * 3);
   });
 
