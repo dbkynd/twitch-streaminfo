@@ -119,7 +119,7 @@ router.get('/whatNow', async (req, res, next) => { // eslint-disable-line no-unu
       newCount.save();
     }
   } else {
-    str = `${currentCount} of Anne's subscribers are currently live. Find out who at: http://annemunition.tv/armory`;
+    str = `${currentCount} of Anne's subscribers are currently live. Find out who at: https://annemunition.tv/armory`;
   }
   res.send(str);
 });
