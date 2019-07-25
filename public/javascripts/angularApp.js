@@ -174,8 +174,11 @@ angular.module('app', ['btford.socket-io'])
     };
 
     vm.year = months => {
-      const years = parseInt(months) % 12;
-      if (years !== 0) return `${years} year${years === 1 ? '' : 's'}`;
+      const dif = parseInt(months) % 12;
+      if (dif === 0) {
+        const years = months / 12;
+        return `${years} year${years === 1 ? '' : 's'}`;
+      }
       return null;
     };
 
