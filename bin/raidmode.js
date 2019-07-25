@@ -24,6 +24,7 @@ function setFilter(enabled) {
         const body = merge(res, {
           botFilters: {
             emotes: { enabled },
+            caps: { enabled },
           },
         });
         body.banphrases = body.banphrases.map(x => x._id);
@@ -38,8 +39,9 @@ function setFilter(enabled) {
       })
       .then(res => res.json())
       .then(res => {
-        const emoteFiltersEnabled = get(res, 'botFilters.emotes.enabled', null);
-        if (emoteFiltersEnabled === enabled) return resolve();
+        const emoteFilterEnabled = get(res, 'botFilters.emotes.enabled', null);
+        const capsFilterEnabled = get(res, 'botFilters.caps.enabled', null);
+        if (emoteFilterEnabled === enabled && capsFilterEnabled === enabled) return resolve();
         return reject();
       });
   });

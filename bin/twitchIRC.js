@@ -129,8 +129,10 @@ module.exports = io => {
   // Someone hosted our channel
   twitch.on('hosted', async (channel, username, viewers, auto, userstate) => { // eslint-disable-line no-unused-vars
     log.info(`${username} hosted the channel: +${viewers} viewer(s) - auto: ${auto}`);
-    // Exit if this was an auto host or the host has no viewers
-    if (auto || !viewers || viewers < 10) return;
+    // Exit if this was an auto host
+    if (auto) return;
+    // Exit if no or little viewers
+    if (!viewers || viewers < 10) return;
     const displayName = utils.displayName(await twitchAPI.getUser(username));
     const entry = new mongo.Hosts({
       data: {
@@ -145,6 +147,8 @@ module.exports = io => {
         utils.trimDB(mongo.Hosts);
       })
       .catch(log.error);
+    // Trigger auto raid mode if over 500 viewers
+    if (viewers >= 500) raidModeAuto();
   });
 
   twitch.on('raid', async (channel, username, raider, viewers, userstate) => {
@@ -167,8 +171,15 @@ module.exports = io => {
         utils.trimDB(mongo.Hosts);
       })
       .catch(log.error);
+    raidModeAuto();
+  });
 
-    // Auto raid mode
+  twitch.on('chat', (channel, userstate, message) => {
+    twitchMessages.process(channel, userstate, message, io);
+  });
+
+  // Auto raid mode
+  function raidModeAuto() {
     twitch.say(config.twitch.channel, '!raidmode on (auto)');
     const followersAmount = status.channel.followersonly;
     const followersEnabled = followersAmount !== -1;
@@ -177,11 +188,7 @@ module.exports = io => {
       twitch.say(config.twitch.channel, '!raidmode off (auto)');
       if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
     }, 1000 * 60 * 3);
-  });
-
-  twitch.on('chat', (channel, userstate, message) => {
-    twitchMessages.process(channel, userstate, message, io);
-  });
+  }
 
   function subscription(userstate) {
     const entry = new mongo.Subscriptions({ data: userstate });
