@@ -16,6 +16,8 @@ config.twitch.nick = config.twitch.nick.toLowerCase();
 config.twitch.channel = `#${config.twitch.user.login}`;
 config.twitch.oauth = `oauth:${config.twitch.oauth.replace('oauth:', '')}`;
 
+let inRaidModeAuto = false;
+
 // Set Twitch tmi options
 const tmiOptions = {
   options: { debug: false },
@@ -180,6 +182,8 @@ module.exports = io => {
 
   // Auto raid mode
   function raidModeAuto() {
+    if (inRaidModeAuto) return;
+    inRaidModeAuto = true;
     twitch.say(config.twitch.channel, '!raidmode on (auto)');
     const followersAmount = status.channel.followersonly;
     const followersEnabled = followersAmount !== -1;
@@ -187,6 +191,7 @@ module.exports = io => {
     setTimeout(() => {
       twitch.say(config.twitch.channel, '!raidmode off (auto)');
       if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
+      inRaidModeAuto = false;
     }, 1000 * 60 * 3);
   }
 
