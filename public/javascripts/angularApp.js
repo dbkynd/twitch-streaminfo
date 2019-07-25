@@ -173,7 +173,11 @@ angular.module('app', ['btford.socket-io'])
       api.restart().catch($log.error);
     };
 
-    vm.year = months => parseInt(months) % 12 === 0;
+    vm.year = months => {
+      const years = parseInt(months) % 12;
+      if (years !== 0) return `${years} year${years === 1 ? '' : 's'}`;
+      return null;
+    };
 
     vm.anyStatus = () => {
       for (const key in vm.status.app) {
