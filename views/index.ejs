@@ -66,7 +66,7 @@
                         <div ng-show="sub.type !== 'submysterygift'">
                             <span class='username'>{{sub.recipientName || sub.name}}
                                 <span class='amount'>{{sub.months}}</span>
-                                <span class='year' ng-show="ctrl.year(sub.months)" v-bind:title="sub.months / 12 + ' years'">
+                                <span class='year' ng-show="ctrl.year(sub.months)" :title="sub.months / 12 + ' years'">
                                     <img src="https://discordapp.com/assets/088958b946cca5e593f4ca8b4bfe2550.svg">
                                 </span>
                             </span>
@@ -76,7 +76,7 @@
                             <div ng-repeat="recipient in sub.recipients | orderBy:'name'" class="recipient">
                                 <span class='username'>{{recipient.name}}
                                     <span class='amount'>{{recipient.months}}</span>
-                                    <span class='year' ng-show="ctrl.year(recipient.months)" v-bind:title="recipient.months / 12 + ' years'">
+                                    <span class='year' ng-show="ctrl.year(recipient.months)" :title="recipient.months / 12 + ' years'">
                                         <img src="https://discordapp.com/assets/088958b946cca5e593f4ca8b4bfe2550.svg">
                                     </span>
                                 </span>
