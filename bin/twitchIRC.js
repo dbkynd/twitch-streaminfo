@@ -264,7 +264,7 @@ module.exports = io => {
       targetLength: giftCount,
       timeout: setTimeout(() => {
         massGifts[userstate['user-id']].save();
-      }, 5000 + (giftCount * 10)),
+      }, 5000 + (giftCount * 500)),
       save: () => {
         if (massGifts[userstate['user-id']].timeout) {
           clearTimeout(massGifts[userstate['user-id']].timeout);
