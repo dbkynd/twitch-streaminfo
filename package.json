@@ -35,7 +35,7 @@
     "morgan": "^1.9.1",
     "node-fetch": "^2.2.0",
     "passport": "^0.4.0",
-    "passport-twitch": "^1.0.3",
+    "passport-twitch-new": "^0.0.1",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
     "serve-favicon": "~2.4.2",
