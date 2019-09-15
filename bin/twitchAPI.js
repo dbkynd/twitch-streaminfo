@@ -35,9 +35,12 @@ module.exports = {
     return fetch(url, headers);
   },
 
-  getTokenData: token => {
-    const url = `https://api.twitch.tv/kraken/?oauth_token=${token}`;
-    return fetch(url);
+  getTokenData: () => {
+    const url = 'https://id.twitch.tv/oauth2/validate';
+    const headers = {
+      Authorization: `OAuth ${config.twitch.ps.access_token}`,
+    };
+    return fetch(url, headers);
   },
 
   getSubscriptions: (offset = 0, limit = 25) => {

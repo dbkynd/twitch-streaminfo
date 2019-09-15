@@ -13,16 +13,13 @@ debug('Loading liveSubs.js');
 let subscribers = [];
 let currentlyLive = [];
 
-twitchAPI.getTokenData(config.twitch.ps.access_token)
+twitchAPI.getTokenData()
   .then(async response => {
-    if (!response.body.token.valid) {
-      return log.error('The provided token is invalid');
-    }
-    if (!config.twitch.user || response.body.token.user_name !== config.twitch.user.login) {
+    if (!config.twitch.user || response.body.login !== config.twitch.user.login) {
       return log.error('The registered token user_name does not match the channel you have entered');
     }
-    if (response.body.token.authorization.scopes.indexOf('channel_subscriptions') === -1) {
-      return log.error(`The token does not have the requires scope ['channel_subscriptions']`);
+    if (!response.body.scopes.includes('channel_subscriptions')) {
+      return log.error(`The token does not have the requires scope 'channel_subscriptions'`);
     }
     debug('Starting liveSubs.js');
     if (fs.existsSync('./subscribers')) {
