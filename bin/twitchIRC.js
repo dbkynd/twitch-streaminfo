@@ -180,6 +180,7 @@ module.exports = io => {
     twitchMessages.process(channel, userstate, message, io);
   });
 
+  let followersTimer = null;
   // Auto raid mode
   function raidModeAuto() {
     if (inRaidModeAuto) return;
@@ -190,9 +191,12 @@ module.exports = io => {
     if (followersEnabled) twitch.say(config.twitch.channel, '/followersoff');
     setTimeout(() => {
       twitch.say(config.twitch.channel, '!raidmode off (auto)');
-      if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
       inRaidModeAuto = false;
     }, 1000 * 60 * 3);
+    if (followersTimer) clearTimeout(followersTimer);
+    followersTimer = setTimeout(() => {
+      if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
+    }, 1000 * 60 * followersAmount);
   }
 
   function subscription(userstate) {
