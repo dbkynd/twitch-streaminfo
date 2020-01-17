@@ -129,7 +129,7 @@ module.exports = io => {
   });
 
   // Someone hosted our channel
-  twitch.on('hosted', async (channel, username, viewers, auto, userstate) => { // eslint-disable-line no-unused-vars
+  twitch.on('hosted', async(channel, username, viewers, auto, userstate) => { // eslint-disable-line no-unused-vars
     log.info(`${username} hosted the channel: +${viewers} viewer(s) - auto: ${auto}`);
     // Exit if this was an auto host
     if (auto) return;
@@ -153,7 +153,7 @@ module.exports = io => {
     if (viewers >= 500) raidModeAuto();
   });
 
-  twitch.on('raid', async (channel, username, raider, viewers, userstate) => {
+  twitch.on('raid', async(channel, username, raider, viewers, userstate) => {
     if (!userstate) return;
     log.info(`${userstate.login} raided from ${userstate['msg-param-login']} with ${viewers} viewers`);
     const displayName = utils.displayName(await twitchAPI.getUser(userstate['msg-param-login']));
@@ -181,6 +181,7 @@ module.exports = io => {
   });
 
   let followersTimer = null;
+
   // Auto raid mode
   function raidModeAuto() {
     if (inRaidModeAuto) return;
@@ -222,7 +223,8 @@ module.exports = io => {
   }
 
   function saveLastSub(userstate) {
-    mongo.Latest.findOneAndUpdate({ name: 'sub' }, { name: 'sub', data: userstate }, { upsert: true }).catch(log.error);
+    mongo.Latest.findOneAndUpdate({ name: 'sub' }, { name: 'sub', data: userstate }, { upsert: true })
+      .catch(log.error);
   }
 
   twitch.on('subscription', (channel, username, plan, msg, userstate) => {
@@ -247,7 +249,7 @@ module.exports = io => {
       `${subTier(userstate['msg-param-sub-plan'])} sub. ${
         userstate['msg-param-months'] === true ? 1 :
           userstate['msg-param-months']
-        } months in a row.`);
+      } months in a row.`);
     if (massGifts[userstate['user-id']]) {
       massGifts[userstate['user-id']].recipients.push(userstate);
       if (massGifts[userstate['user-id']].recipients.length === massGifts[userstate['user-id']].targetLength) {
@@ -306,7 +308,8 @@ module.exports = io => {
       .catch(err => {
         log.error('Cheer Save to DB Error: ', err);
       });
-    mongo.Latest.findOneAndUpdate({ name: 'cheer' }, { name: 'cheer', data }, { upsert: true }).catch(log.error);
+    mongo.Latest.findOneAndUpdate({ name: 'cheer' }, { name: 'cheer', data }, { upsert: true })
+      .catch(log.error);
   });
 
   // Connect to Twitch IRC
