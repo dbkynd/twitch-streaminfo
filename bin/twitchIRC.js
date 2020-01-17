@@ -197,7 +197,7 @@ module.exports = io => {
     if (followersTimer) clearTimeout(followersTimer);
     followersTimer = setTimeout(() => {
       if (followersEnabled) twitch.say(config.twitch.channel, `/followers ${followersAmount}`);
-    }, 1000 * 60 * followersAmount);
+    }, 1000 * 60 * 10);
   }
 
   function subscription(userstate) {
