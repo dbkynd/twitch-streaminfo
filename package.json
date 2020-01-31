@@ -4,7 +4,8 @@
   "description": "Custom page to view tips, subs, resubs, cheers, and chat controls.",
   "main": "init",
   "scripts": {
-    "start": "node init"
+    "start": "node init",
+    "prettier": "prettier --write **/*.{js,md,json} --ignore-path .gitignore"
   },
   "repository": {
     "type": "git",
@@ -49,7 +50,11 @@
     "ws": "^7.2.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^19.0.0"
   }

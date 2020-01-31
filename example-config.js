@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
   port: 3000,
   pageTitle: '',
@@ -34,4 +33,4 @@ module.exports = {
     googleSheetID3: '',
     alterTimeStampSeconds: 40,
   },
-};
+}
