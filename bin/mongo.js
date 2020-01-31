@@ -23,7 +23,8 @@ if (!config.mongoUri || !mongoURI.test(config.mongoUri)) {
   mongoose.connect(
     config.mongoUri,
     {
-      useMongoClient: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     },
     (err) => {
       if (err) {

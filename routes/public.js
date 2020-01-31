@@ -11,6 +11,7 @@ const status = require('../bin/status')
 const request = require('node-fetch')
 const config = require('../config')
 const { get } = require('lodash')
+const twitchApi = require('../bin/twitchAPI')
 require('moment-timezone')
 
 router.get('/uptime', (req, res, next) => {
