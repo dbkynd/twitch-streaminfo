@@ -180,6 +180,65 @@ router.get('/reported/purge/:name', async (req, res) => {
     });
 });
 
+router.get('/clips', async(req, res, next) => {
+  // lowercase all request parameters
+  for (const key in req.query) {
+    if (req.query.hasOwnProperty(key)) {
+      req.query[key] = req.query[key].toLowerCase();
+    }
+  }
+  // Extract the action and target from the query parameters
+  const { action, target } = req.query;
+  // Show usage if missing data
+  if (!action || !target) {
+    return res.status(200)
+      .send('Usage: !clips <allow|deny> <channel>');
+  }
+  // Show usage if action is not allow or deny
+  if (action !== 'allow' && action !== 'deny') {
+    return res.status(200)
+      .send('Usage: !clips <allow|deny> <channel>');
+  }
+  // Get the user data about the target from the Twitch API
+  let targetData;
+  try {
+    targetData = get(await twitchApi.getUser(target), 'body.data[0]', null);
+  } catch (e) {
+    return res.status(200)
+      .send('Twitch API error. Please try again.');
+  }
+  // Respond if there is no user found
+  if (!targetData) {
+    return res.status(200)
+      .send(`'${target}' is not a registered twitch user.`);
+  }
+  // Get any existing record for this target from the database
+  const existingRecord = await req.db.ClipChannels.findOne({ channelId: targetData.id });
+  if (action === 'allow') {
+    if (existingRecord) {
+      return res.status(200)
+        .send(`Clips from ${targetData.display_name || target.login} are already allowed.`);
+    } else {
+      // Save a new record
+      await new req.db.ClipChannels({
+        channelId: targetData.id,
+      }).save();
+      return res.status(200)
+        .send(`Clips from ${targetData.display_name || target.login} are now allowed.`);
+    }
+  } else if (action === 'deny') {
+    if (!existingRecord) {
+      return res.status(200)
+        .send(`Clips from ${targetData.display_name || target.login} are already denied.`);
+    } else {
+      // Delete the existing record
+      await existingRecord.remove();
+      return res.status(200)
+        .send(`Clips from ${targetData.display_name || target.login} are now denied.`);
+    }
+  }
+});
+
 module.exports = io => {
   router.get('/sub_games_advance_queue', (req, res, next) => { // eslint-disable-line no-unused-vars
     // Forbidden if nightbot response url is not passed in headers

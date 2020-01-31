@@ -177,7 +177,7 @@ module.exports = io => {
   });
 
   twitch.on('chat', (channel, userstate, message) => {
-    twitchMessages.process(channel, userstate, message, io);
+    twitchMessages.process(channel, userstate, message, io, twitch);
   });
 
   let followersTimer = null;

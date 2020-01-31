@@ -86,6 +86,15 @@ module.exports = {
     };
     return fetch(url, headers);
   },
+
+  getClip: stub => {
+    const url = `https://api.twitch.tv/helix/clips?id=${stub}`;
+    const headers = {
+      'Client-ID': config.twitch.app.client_id,
+      Authorization: `Bearer ${config.twitch.ps.access_token}`,
+    };
+    return fetch(url, headers);
+  },
 };
 
 function fetch(url, headers) {

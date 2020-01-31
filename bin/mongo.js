@@ -113,6 +113,10 @@ const Latest = mongoose.model('latests', new mongoose.Schema({
   data: Object,
 }));
 
+const ClipChannels = mongoose.model('allowed_clip_channels', new mongoose.Schema({
+  channelId: String,
+}));
+
 module.exports = {
   connection: mongoose.connection,
   Subscriptions,
@@ -126,4 +130,5 @@ module.exports = {
   Counts,
   Notes,
   Latest,
+  ClipChannels,
 };
