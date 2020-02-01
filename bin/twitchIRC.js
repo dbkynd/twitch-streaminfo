@@ -134,7 +134,7 @@ module.exports = (io) => {
   })
 
   // Someone hosted our channel
-  twitch.on('hosted', async (channel, username, viewers, auto, userstate) => {
+  twitch.on('hosted', async (channel, username, viewers, auto) => {
     // eslint-disable-line no-unused-vars
     log.info(
       `${username} hosted the channel: +${viewers} viewer(s) - auto: ${auto}`
@@ -162,14 +162,9 @@ module.exports = (io) => {
     if (viewers >= 500) raidModeAuto()
   })
 
-  twitch.on('raid', async (channel, username, raider, viewers, userstate) => {
-    if (!userstate) return
-    log.info(
-      `${userstate.login} raided from ${userstate['msg-param-login']} with ${viewers} viewers`
-    )
-    const displayName = utils.displayName(
-      await twitchAPI.getUser(userstate['msg-param-login'])
-    )
+  twitch.on('raided', async (channel, username, viewers) => {
+    log.info(`${username} raided with ${viewers} viewers`)
+    const displayName = utils.displayName(await twitchAPI.getUser(username))
     // Save to the database
     const entry = new mongo.Hosts({
       data: {
@@ -258,55 +253,63 @@ module.exports = (io) => {
     subscription(userstate)
   })
 
-  twitch.on('resub', (channel, username, months, msg, userstate, plan) => {
-    // eslint-disable-line no-unused-vars
-    if (isDuplicate(userstate)) return
-    log.info(
-      `${utils.displayName(
-        userstate.login,
-        userstate['display-name']
-      )} has just subscribed with a ` +
-        `${subTier(
-          userstate['msg-param-sub-plan']
-        )} sub. ${months} months in a row.`
-    )
-    subscription({ ...userstate, message: msg })
-  })
-
-  twitch.on('subgift', (channel, username, recipient, plan, userstate) => {
-    if (isDuplicate(userstate)) return
-    log.info(
-      `${utils.displayName(
-        userstate['msg-param-recipient-user-name'],
-        userstate['msg-param-recipient-display-name']
-      )} has just subscribed, ` +
-        `via a gift from ${utils.displayName(
+  twitch.on(
+    'resub',
+    (channel, username, streakMonths, msg, userstate, plan) => {
+      // eslint-disable-line no-unused-vars
+      const cumulativeMonths = ~~userstate['msg-param-cumulative-months']
+      if (isDuplicate(userstate)) return
+      log.info(
+        `${utils.displayName(
           userstate.login,
           userstate['display-name']
-        )}, with a ` +
-        `${subTier(userstate['msg-param-sub-plan'])} sub. ${
-          userstate['msg-param-months'] === true
-            ? 1
-            : userstate['msg-param-months']
-        } months in a row.`
-    )
-    if (massGifts[userstate['user-id']]) {
-      massGifts[userstate['user-id']].recipients.push(userstate)
-      if (
-        massGifts[userstate['user-id']].recipients.length ===
-        massGifts[userstate['user-id']].targetLength
-      ) {
-        saveLastSub(userstate)
-        massGifts[userstate['user-id']].save()
-      }
-      return
+        )} has just re-subscribed for ${cumulativeMonths} months with a ` +
+          `${subTier(
+            userstate['msg-param-sub-plan']
+          )} sub. ${streakMonths} months in a row.`
+      )
+      subscription({ ...userstate, message: msg })
     }
-    subscription(userstate)
-  })
+  )
+
+  twitch.on(
+    'subgift',
+    (channel, username, streakMonths, recipient, plan, userstate) => {
+      if (isDuplicate(userstate)) return
+      log.info(
+        `${utils.displayName(
+          userstate['msg-param-recipient-user-name'],
+          userstate['msg-param-recipient-display-name']
+        )} has just subscribed, ` +
+          `via a gift from ${utils.displayName(
+            userstate.login,
+            userstate['display-name']
+          )}, with a ` +
+          `${subTier(userstate['msg-param-sub-plan'])} sub. ${
+            userstate['msg-param-months'] === true
+              ? 1
+              : userstate['msg-param-months']
+          } months in a row.`
+      )
+      if (massGifts[userstate['user-id']]) {
+        massGifts[userstate['user-id']].recipients.push(userstate)
+        if (
+          massGifts[userstate['user-id']].recipients.length ===
+          massGifts[userstate['user-id']].targetLength
+        ) {
+          saveLastSub(userstate)
+          massGifts[userstate['user-id']].save()
+        }
+        return
+      }
+      subscription(userstate)
+    }
+  )
 
   twitch.on(
     'submysterygift',
-    (channel, username, giftCount, plan, senderCount, userstate) => {
+    (channel, username, giftCount, plan, userstate) => {
+      const senderCount = ~~userstate['msg-param-sender-count']
       if (isDuplicate(userstate)) return
       log.info(
         `${utils.displayName(
@@ -314,7 +317,7 @@ module.exports = (io) => {
           userstate['display-name']
         )} has just gifted ${giftCount} ${subTier(
           userstate['msg-param-sub-plan']
-        )} subs.`
+        )} subs. Has gifted ${senderCount} in total.`
       )
       massGifts[userstate['user-id']] = {
         recipients: [],
@@ -380,6 +383,7 @@ module.exports = (io) => {
     socket.on('chat_command', (data) => {
       let command = `/${data.command}${data.enabled ? '' : 'off'}`
       if (data.command === 'slow' && data.enabled) command += ' 30'
+      if (data.command === 'followers' && data.enabled) command += ' 10'
       twitch.say(config.twitch.channel, command)
     })
 
