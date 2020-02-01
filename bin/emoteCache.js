@@ -72,24 +72,35 @@ function init() {
   })
 }
 
+const emotesToSkip = ['Hey', 'Happy']
+
 function getTwitchEmotes(forced) {
   return new Promise((resolve, reject) => {
     if (twitchEmotes && !forced) return resolve()
     log.info('Caching Twitch Emotes')
-    fetch('https://twitchemotes.com/api_cache/v3/images.json', {
+    fetch('https://api.twitch.tv/kraken/chat/emoticons', {
       method: 'GET',
+      headers: {
+        'Client-ID': config.twitch.app.client_id,
+        Accept: 'application/vnd.twitchtv.v5+json',
+      },
     })
       .then((res) => res.json())
       .then((results) => {
         const emoteList = {}
-        const template = `https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/2.0`
-        for (const id in results) {
-          if (results.hasOwnProperty(id)) {
-            emoteList[results[id].code] = {
-              url: template.replace('{{id}}', id),
-            }
+        results.emoticons.forEach((emote) => {
+          if (emotesToSkip.includes(emote.regex)) return
+          const images = emote.images
+          let url
+          if (Array.isArray(images)) {
+            url = images[0].url
+          } else {
+            url = images.url
           }
-        }
+          emoteList[emote.regex] = {
+            url,
+          }
+        })
         try {
           delete emoteList.Hey
           delete emoteList.Happy
