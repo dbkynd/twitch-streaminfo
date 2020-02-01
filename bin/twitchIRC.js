@@ -242,6 +242,8 @@ module.exports = (io) => {
   }
 
   twitch.on('subscription', (channel, username, plan, msg, userstate) => {
+    log.info('subscription')
+    if (!userstate) return
     if (isDuplicate(userstate)) return
     log.info(
       `${utils.displayName(
@@ -256,6 +258,8 @@ module.exports = (io) => {
   twitch.on(
     'resub',
     (channel, username, streakMonths, msg, userstate, plan) => {
+      log.info('resub')
+      if (!userstate) return
       // eslint-disable-line no-unused-vars
       const cumulativeMonths = ~~userstate['msg-param-cumulative-months']
       if (isDuplicate(userstate)) return
@@ -275,6 +279,8 @@ module.exports = (io) => {
   twitch.on(
     'subgift',
     (channel, username, streakMonths, recipient, plan, userstate) => {
+      log.info('subgift')
+      if (!userstate) return
       if (isDuplicate(userstate)) return
       log.info(
         `${utils.displayName(
@@ -309,6 +315,8 @@ module.exports = (io) => {
   twitch.on(
     'submysterygift',
     (channel, username, giftCount, plan, userstate) => {
+      log.info('submysterygift')
+      if (!userstate) return
       const senderCount = ~~userstate['msg-param-sender-count']
       if (isDuplicate(userstate)) return
       log.info(
