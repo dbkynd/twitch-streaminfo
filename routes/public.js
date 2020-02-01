@@ -227,7 +227,7 @@ router.get('/clips', async (req, res, next) => {
   }
   // Respond if there is no user found
   if (!targetData) {
-    return res.status(200).send(`'${target}' is not a registered twitch user.`)
+    return res.status(200).send(`'${target}' is not a registered Twitch user.`)
   }
   // Get any existing record for this target from the database
   const existingRecord = await req.db.ClipChannels.findOne({
