@@ -87,7 +87,7 @@ function getTwitchEmotes(forced) {
     })
       .then((res) => res.json())
       .then((results) => {
-        const emoteList = {}
+        let emoteList = {}
         results.emoticons.forEach((emote) => {
           if (emotesToSkip.includes(emote.regex)) return
           const images = emote.images
@@ -101,22 +101,17 @@ function getTwitchEmotes(forced) {
             url,
           }
         })
-        try {
-          delete emoteList.Hey
-          delete emoteList.Happy
-        } catch (e) {
-          log.error(e)
-        }
         twitchEmotes = emoteList
+        emoteList = null
         fs.writeFile(
           './twitchEmotes.json',
           JSON.stringify(twitchEmotes, null, 2),
           { encoding: 'utf8' },
           (err) => {
             if (err) log.error(err)
+            resolve()
           }
         )
-        resolve()
       })
       .catch(reject)
   })
@@ -131,7 +126,7 @@ function getBttvEmotes(forced) {
     })
       .then((res) => res.json())
       .then((results) => {
-        const emoteList = {}
+        let emoteList = {}
         const template = results.urlTemplate
         results.emotes.forEach((emote) => {
           emoteList[emote.code] = {
@@ -141,15 +136,16 @@ function getBttvEmotes(forced) {
           }
         })
         bttvEmotes = emoteList
+        emoteList = null
         fs.writeFile(
           './bttvEmotes.json',
           JSON.stringify(bttvEmotes, null, 2),
           { encoding: 'utf8' },
           (err) => {
             if (err) log.error(err)
+            resolve()
           }
         )
-        resolve()
       })
       .catch(reject)
   })
@@ -174,9 +170,9 @@ function getCheerActions(forced) {
           { encoding: 'utf8' },
           (err) => {
             if (err) log.error(err)
+            resolve()
           }
         )
-        resolve()
       })
       .catch(reject)
   })
