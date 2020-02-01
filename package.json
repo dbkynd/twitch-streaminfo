@@ -5,7 +5,8 @@
   "main": "init",
   "scripts": {
     "start": "node init",
-    "prettier": "prettier --write **/*.{js,md,json} --ignore-path .gitignore"
+    "prettier": "prettier --write **/*.{js,md,json} --ignore-path .gitignore",
+    "lint": "eslint --ext .js --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
