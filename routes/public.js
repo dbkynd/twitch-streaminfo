@@ -150,9 +150,9 @@ router.get('/liveSubs', (req, res, next) => {
 
 router.get('/allCleared', async (req, res, next) => {
   // eslint-disable-line no-unused-vars
-  const tips = await req.db.Tips.count({ cleared: false })
-  const subs = await req.db.Subscriptions.count({ cleared: false })
-  const cheers = await req.db.Cheers.count({ cleared: false })
+  const tips = await req.db.Tips.countDocuments({ cleared: false })
+  const subs = await req.db.Subscriptions.countDocuments({ cleared: false })
+  const cheers = await req.db.Cheers.countDocuments({ cleared: false })
   res.json(tips + subs + cheers === 0)
 })
 

@@ -25,6 +25,7 @@ if (!config.mongoUri || !mongoURI.test(config.mongoUri)) {
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     },
     (err) => {
       if (err) {

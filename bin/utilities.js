@@ -24,7 +24,7 @@ module.exports = {
   },
 
   trimDB: async (model) => {
-    const count = await model.count({}).catch(log.error)
+    const count = await model.countDocuments({}).catch(log.error)
     if (count > config.recordsToStore) {
       for (let i = 1; i <= count - config.recordsToStore; i++) {
         debug('Removing a record from the database')
