@@ -26,9 +26,9 @@ async function clipsDeletion(channel, userstate, message, twitch) {
   const isBroadcaster = get(userstate, 'badges.broadcaster', null)
   const isModerator = get(userstate, 'badges.moderator', null)
   const isVip = get(userstate, 'badges.vip', null)
-  const isSubscriber = get(userstate, 'badges.subscriber', null)
+  // const isSubscriber = get(userstate, 'badges.subscriber', null)
   // Return if anybody besides non-subscribers
-  if (isBroadcaster || isModerator || isVip || isSubscriber) return
+  if (isBroadcaster || isModerator || isVip) return
   // Return if the message does not contain a clip
   if (!clipsReg.test(message)) return
   // Extract the clip stub from the message
