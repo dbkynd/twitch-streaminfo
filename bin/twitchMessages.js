@@ -23,23 +23,30 @@ function banNotify(channel, userstate, message) {
 }
 
 async function clipsDeletion(channel, userstate, message, twitch) {
+  const isBroadcaster = get(userstate, 'badges.broadcaster', null)
+  const isModerator = get(userstate, 'badges.moderator', null)
+  const isVip = get(userstate, 'badges.vip', null)
+  const isSubscriber = get(userstate, 'badges.subscriber', null)
+  // Return if anybody besides non-subscribers
+  if (isBroadcaster || isModerator || isVip || isSubscriber) return
   // Return if the message does not contain a clip
-  const match = message.match(clipsReg)
-  if (!match) return
+  if (!clipsReg.test(message)) return
   // Extract the clip stub from the message
+  const match = message.match(clipsReg)
   const stub = match[2] || match[1]
   // Return if no stub was found
   if (!stub) return
   // Query the Twitch API for the clip data
   const clipData = await twitchApi.getClip(stub)
-  // Extract the clips channel id from the clip data
+  // Extract the clip channel id from the clip data
   const clipChannelId = get(clipData, 'body.data[0].broadcaster_id', null)
   // Return if the clip id matches the broadcasters id
   if (clipChannelId === config.twitch.id) return
   // Check the database if the clips channel id is allowed
   const allowed = await ClipChannels.findOne({ channelId: clipChannelId })
-  // Return if we found any matches
+  // Return if we found a match
   if (allowed) return
+  // Delete the message containing the clip we don't allow
   twitch.deletemessage(channel, userstate.id)
 }
 
