@@ -51,7 +51,7 @@ function init() {
       .then(resolve)
       .catch(reject)
       .finally(() => {
-        setTimeout(() => {
+        /*setTimeout(() => {
           setInterval(() => {
             getBttvEmotes(true)
           }, 1000 * 60 * 60)
@@ -67,7 +67,7 @@ function init() {
           setInterval(() => {
             getTwitchEmotes(true)
           }, 1000 * 60 * 60)
-        }, 30000)
+        }, 30000)*/
       })
   })
 }
