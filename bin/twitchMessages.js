@@ -8,11 +8,50 @@ debug('Loading twitchMessages.js')
 
 const messageCache = {}
 const clipsReg = /clips\.twitch\.tv\/(\w+)|twitch.tv\/\w+\/clip\/(\w+)/
+const permitted = new Map()
 
 function process(channel, userstate, message, io, twitch) {
   // eslint-disable-line no-unused-vars
   banNotify(channel, userstate, message)
   clipsDeletion(channel, userstate, message, twitch).catch()
+  permit(channel, userstate, message).catch()
+}
+
+async function permit(channel, userstate, message) {
+  // Exit if message not starting with !
+  if (!message.startsWith('!')) return
+  // Exit if not a permit message
+  if (!message.toLowerCase().startsWith('!permit')) return
+  // Get the username of the user we want to permit
+  const user = message
+    .toLowerCase()
+    .replace('!permit', '')
+    .trim()
+    .split(' ')[0]
+
+  // Get the user data from Twitch
+  const userData = await twitchApi.getUser(user)
+  // Extract the user id
+  const id = get(userData, 'body.data[0].id', null)
+  if (!id) return
+
+  // If we are already permit this user
+  // clear the timer and delete the record
+  // so it can be remade with a fresh timer
+  if (permitted.has(id)) {
+    clearTimeout(permitted.get(id))
+    permitted.delete(id)
+  }
+
+  // Store the permission and have it clear after 60 seconds
+  permitted.set(
+    id,
+    setTimeout(() => {
+      if (permitted.has(id)) {
+        permitted.delete(id)
+      }
+    }, 1000 * 60)
+  )
 }
 
 function banNotify(channel, userstate, message) {
@@ -29,6 +68,8 @@ async function clipsDeletion(channel, userstate, message, twitch) {
   // const isSubscriber = get(userstate, 'badges.subscriber', null)
   // Return if anybody besides non-subscribers
   if (isBroadcaster || isModerator || isVip) return
+  // Return if the user is currently permitted
+  if (permitted.has(userstate['user-id'])) return
   // Return if the message does not contain a clip
   if (!clipsReg.test(message)) return
   // Extract the clip stub from the message
