@@ -1,7 +1,6 @@
-'use strict';
-const debug = require('debug')('streamInfo:status');
+const debug = require('debug')('streamInfo:status')
 
-debug('Loading status.js');
+debug('Loading status.js')
 
 module.exports = {
   app: {
@@ -19,4 +18,4 @@ module.exports = {
   },
   onFrontPage: null,
   raidMode: null,
-};
+}

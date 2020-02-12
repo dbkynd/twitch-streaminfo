@@ -1,19 +1,18 @@
-'use strict';
-const request = require('snekfetch');
-const config = require('../config');
-const log = require('winston');
-const randomString = require('randomstring');
-const debug = require('debug')('streamInfo:webhooks');
+const request = require('snekfetch')
+const config = require('../config')
+const log = require('winston')
+const randomString = require('randomstring')
+const debug = require('debug')('streamInfo:webhooks')
 
-debug('Loading webhooks.js');
+debug('Loading webhooks.js')
 
-const secret = randomString.generate();
+const secret = randomString.generate()
 
-setInterval(subscribe, 1000 * 60 * 60 * 24 * 9);
-subscribe();
+setInterval(subscribe, 1000 * 60 * 60 * 24 * 9)
+subscribe()
 
 function subscribe() {
-  debug('Subscribing to Twitch Webhooks...');
+  debug('Subscribing to Twitch Webhooks...')
   request
     .post('https://api.twitch.tv/helix/webhooks/hub')
     .set('Client-ID', config.twitch.app.client_id)
@@ -24,12 +23,12 @@ function subscribe() {
       'hub.lease_seconds': 864000,
       'hub.secret': secret,
     })
-    .catch(err => {
-      debug('Error subscribing to Twitch Webhooks');
-      log.error(err);
-    });
+    .catch((err) => {
+      debug('Error subscribing to Twitch Webhooks')
+      log.error(err)
+    })
 }
 
 module.exports = {
   secret,
-};
+}
