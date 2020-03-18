@@ -156,9 +156,12 @@ function getCheerActions(forced) {
     if (cheerActions && !forced) return resolve()
     log.info('Caching Cheer Actions')
     fetch(
-      `https://api.twitch.tv/kraken/bits/actions?api_version=5&client_id=${config.twitch.app.client_id}`,
+      `https://api.twitch.tv/v5/bits/actions?channel_id=${config.twitch.id}`,
       {
         method: 'GET',
+        headers: {
+          'Client-ID': config.twitch.app.client_id,
+        },
       }
     )
       .then((res) => res.json())
