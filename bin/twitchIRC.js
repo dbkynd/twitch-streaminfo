@@ -71,6 +71,8 @@ module.exports = (io) => {
         status.channel.followersonly = -1
       } else if (state['followers-only'] === false) {
         status.channel.followersonly = 0
+      } else if (state['followers-only'] === true) {
+        status.channel.followersonly = 1
       } else {
         status.channel.followersonly = state['followers-only']
       }
