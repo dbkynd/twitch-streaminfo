@@ -3481,9 +3481,10 @@ throwback@^4.1.0:
   resolved "https://registry.yarnpkg.com/throwback/-/throwback-4.1.0.tgz#421aac7ba9eff473105385ac4a2b0130d4b0a59c"
   integrity sha512-dLFe8bU8SeH0xeqeKL7BNo8XoPC/o91nz9/ooeplZPiso+DZukhoyZcSz9TFnUNScm+cA9qjU1m1853M6sPOng==
 
-"tmi.js@github:dbkynd/tmi.js#upstream":
-  version "1.6.0"
-  resolved "https://codeload.github.com/dbkynd/tmi.js/tar.gz/4c7c8e6a228f60990edb1523788a3703ca538b16"
+tmi.js@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/tmi.js/-/tmi.js-1.5.0.tgz#746e7d66bafdc4eb23b4bb0b306a3287c637282b"
+  integrity sha512-JyWKy9dRkZDG1h6PnpE8fJVsTrW82/yANXoP7R3u02vG7PLCvHGRGTWzBwk0ymMJGX9A+YzDx5tXQDsTeJd/5A==
   dependencies:
     request "2.88.0"
     ws "6.1.3"
