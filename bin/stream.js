@@ -55,7 +55,10 @@ function pollStreamStatus() {
           `https://api.twitch.tv/helix/streams?user_id=${liveStatus.targetId ||
             config.twitch.id}&type=live`
         )
-        .set({ 'Client-ID': config.twitch.app.client_id })
+        .set({
+          'Client-ID': config.twitch.app.client_id,
+          Authorization: `Bearer ${config.twitch.ps.access_token}`,
+        })
         .then((streamResult) => {
           const stream = utils.get(['body', 'data', 0], streamResult)
           // Clear data if we are now hosting
@@ -182,7 +185,12 @@ module.exports = (io) => {
       request
         .get(
           `https://api.twitch.tv/kraken/streams/featured` +
-            `?client_id=${config.twitch.app.client_id}&api_version=5`
+            `?client_id=${config.twitch.app.client_id}&api_version=5`,
+          {
+            headers: {
+              Authorization: `Bearer ${config.twitch.ps.access_token}`,
+            },
+          }
         )
         .then((response) => {
           // Exit if we don't have the data we need to continue

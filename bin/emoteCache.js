@@ -83,6 +83,7 @@ function getTwitchEmotes(forced) {
       headers: {
         'Client-ID': config.twitch.app.client_id,
         Accept: 'application/vnd.twitchtv.v5+json',
+        Authorization: `Bearer ${config.twitch.ps.access_token}`,
       },
     })
       .then((res) => res.json())
@@ -159,6 +160,9 @@ function getCheerActions(forced) {
       `https://api.twitch.tv/kraken/bits/actions?api_version=5&client_id=${config.twitch.app.client_id}`,
       {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${config.twitch.ps.access_token}`,
+        },
       }
     )
       .then((res) => res.json())
