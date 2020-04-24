@@ -3,6 +3,7 @@ const config = require('../config')
 const log = require('winston')
 const parser = require('../bin/parser')
 const googleSheets = require('../bin/googleSheet')
+const path = require('path')
 
 // Main index page
 router.get('/', (req, res, next) => {
@@ -93,13 +94,18 @@ router.post('/saveNote', (req, res, next) => {
     })
 })
 
-router.get('/terms', async (req, res, next) => {
+// SUSPICIOUS FOLLOWER TERM ROUTES
+router.get('/terms', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../views/terms.html'))
+})
+
+router.get('/term', async (req, res, next) => {
   // get a list of suspicious terms
   const terms = await req.db.SuspiciousTerms.find()
   res.status(200).json(terms)
 })
 
-router.post('/terms', async (req, res, next) => {
+router.post('/term', async (req, res, next) => {
   // add a term to the suspicious terms collection
   let { term } = req.body
   if (!term || term === '') return res.status(400).send('Missing the term.')
@@ -110,7 +116,7 @@ router.post('/terms', async (req, res, next) => {
   entry
     .save()
     .then(() => {
-      res.status(200).send('The term was added successfully.')
+      res.status(200).json(entry)
     })
     .catch(() => {
       res
@@ -119,9 +125,9 @@ router.post('/terms', async (req, res, next) => {
     })
 })
 
-router.delete('/terms', async (req, res, next) => {
+router.delete('/term', async (req, res, next) => {
   // remove a term from the suspicious terms collection
-  let { _id } = req.body
+  const { _id } = req.body
   if (!_id || _id === '')
     return res.status(400).send('Missing the document id.')
   const existing = await req.db.SuspiciousTerms.findById(_id)
@@ -137,7 +143,7 @@ router.delete('/terms', async (req, res, next) => {
     })
 })
 
-router.patch('/terms', async (req, res, next) => {
+router.patch('/term', async (req, res, next) => {
   // update a term from the suspicious terms collection
   let { _id, term } = req.body
   if (!term || term === '') return res.status(400).send('Missing the term.')
@@ -146,9 +152,9 @@ router.patch('/terms', async (req, res, next) => {
   term = term.toLowerCase()
   const existing = await req.db.SuspiciousTerms.findById(_id)
   if (!existing) return res.status(409).send('The term was not found.')
-  req.db.SuspiciousTerms.findByIdAndUpdate(_id, { term })
-    .then(() => {
-      res.status(200).send('The term was successfully updated.')
+  req.db.SuspiciousTerms.findByIdAndUpdate(_id, { term }, { new: true })
+    .then((doc) => {
+      res.status(200).json(doc)
     })
     .catch(() => {
       res

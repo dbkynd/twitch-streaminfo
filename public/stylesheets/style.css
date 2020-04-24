@@ -25,7 +25,7 @@ body {
   z-index: 3;
 }
 
-.statusBar span {
+.statusBar span, .statusBar div {
   margin: 3px;
   padding: 2px 10px;
   background: #e83c3c;
@@ -33,6 +33,10 @@ body {
   border-radius: 5px;
   user-select: none;
   cursor: default;
+}
+
+.statusBar div {
+  cursor: pointer;
 }
 
 .connected {
