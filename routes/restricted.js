@@ -93,6 +93,70 @@ router.post('/saveNote', (req, res, next) => {
     })
 })
 
+router.get('/terms', async (req, res, next) => {
+  // get a list of suspicious terms
+  const terms = await req.db.SuspiciousTerms.find()
+  res.status(200).json(terms)
+})
+
+router.post('/terms', async (req, res, next) => {
+  // add a term to the suspicious terms collection
+  let { term } = req.body
+  if (!term || term === '') return res.status(400).send('Missing the term.')
+  term = term.toLowerCase()
+  const existing = await req.db.SuspiciousTerms.findOne({ term })
+  if (existing) return res.status(409).send('The term is already registered.')
+  const entry = new req.db.SuspiciousTerms({ term })
+  entry
+    .save()
+    .then(() => {
+      res.status(200).send('The term was added successfully.')
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .send('There was an error adding the term to the database.')
+    })
+})
+
+router.delete('/terms', async (req, res, next) => {
+  // remove a term from the suspicious terms collection
+  let { _id } = req.body
+  if (!_id || _id === '')
+    return res.status(400).send('Missing the document id.')
+  const existing = await req.db.SuspiciousTerms.findById(_id)
+  if (!existing) return res.status(409).send('The term was not found.')
+  req.db.SuspiciousTerms.findByIdAndRemove(_id)
+    .then(() => {
+      res.status(200).send('The term was successfully removed.')
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .send('There was an error removing the term from the database.')
+    })
+})
+
+router.patch('/terms', async (req, res, next) => {
+  // update a term from the suspicious terms collection
+  let { _id, term } = req.body
+  if (!term || term === '') return res.status(400).send('Missing the term.')
+  if (!_id || _id === '')
+    return res.status(400).send('Missing the document id.')
+  term = term.toLowerCase()
+  const existing = await req.db.SuspiciousTerms.findById(_id)
+  if (!existing) return res.status(409).send('The term was not found.')
+  req.db.SuspiciousTerms.findByIdAndUpdate(_id, { term })
+    .then(() => {
+      res.status(200).send('The term was successfully updated.')
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .send('There was an error updating the term in the database.')
+    })
+})
+
 module.exports = (io) => {
   router.post('/clearItem', (req, res, next) => {
     // eslint-disable-line no-unused-vars
