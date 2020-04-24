@@ -340,6 +340,7 @@ input:checked + .slider::before {
   right: 5px;
   bottom: 5px;
   background-color: #4e9545 !important;
+  color: #000;
 }
 
 .gifter {
