@@ -121,7 +121,7 @@ angular
 
     // New Follower Event
     io.on('following', (data) => {
-      if (data.type === 'create') vm.followers++
+      vm.followers++
     })
 
     const array = [
