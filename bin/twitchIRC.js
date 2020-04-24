@@ -197,18 +197,17 @@ module.exports = (io) => {
   function raidModeAuto() {
     if (inRaidModeAuto) return
     inRaidModeAuto = true
-    twitch.say(config.twitch.channel, '!raidmode on (auto)')
+    say('!raidmode on (auto)')
     const followersAmount = status.channel.followersonly
     const followersEnabled = followersAmount !== -1
-    if (followersEnabled) twitch.say(config.twitch.channel, '/followersoff')
+    if (followersEnabled) say('/followersoff')
     setTimeout(() => {
-      twitch.say(config.twitch.channel, '!raidmode off (auto)')
+      say('!raidmode off (auto)')
       inRaidModeAuto = false
     }, 1000 * 60 * 3)
     if (followersTimer) clearTimeout(followersTimer)
     followersTimer = setTimeout(() => {
-      if (followersEnabled)
-        twitch.say(config.twitch.channel, `/followers ${followersAmount}`)
+      if (followersEnabled) say(`/followers ${followersAmount}`)
     }, 1000 * 60 * 10)
   }
 
@@ -394,17 +393,16 @@ module.exports = (io) => {
       let command = `/${data.command}${data.enabled ? '' : 'off'}`
       if (data.command === 'slow' && data.enabled) command += ' 30'
       if (data.command === 'followers' && data.enabled) command += ' 10'
-      twitch.say(config.twitch.channel, command)
+      say(command)
     })
 
     socket.on('toggle_raid_mode', (enabled) => {
       const action = enabled ? 'on' : 'off'
-      const command = `!raidmode ${action}`
-      twitch.say(config.twitch.channel, command)
+      say(`!raidmode ${action}`)
     })
 
     socket.on('add_marker', () => {
-      twitch.say(config.twitch.channel, '/marker')
+      say('/marker')
     })
   })
 }
@@ -414,4 +412,10 @@ function subTier(amount) {
   if (amount === '2000') return 'Tier 2'
   if (amount === '3000') return 'Tier 3'
   return amount
+}
+
+function say(command) {
+  if (process.env.NODE_ENV !== 'development') {
+    twitch.say(config.twitch.channel, command)
+  }
 }
