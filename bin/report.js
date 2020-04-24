@@ -40,7 +40,10 @@ module.exports = {
         // Check user channel against Twitch api
         request
           .get(`https://api.twitch.tv/kraken/channels/${x.username}`)
-          .set('Client-ID', config.twitch.app.client_id)
+          .set({
+            'Client-ID': config.twitch.app.client_id,
+            Authorization: `Bearer ${config.twitch.ps.access_token}`,
+          })
           .catch(async (banned) => {
             // 422 UNPROCESSABLE ENTRY when the channel is removed.
             if (banned.status === 422) {
