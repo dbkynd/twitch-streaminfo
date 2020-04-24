@@ -127,6 +127,9 @@ app.use('/auth/not_authorized', (req, res, next) => {
 // ALL ROUTES PAST HERE ARE AUTHENTICATED TO A TWITCH ID
 
 app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'development' && !req.user) {
+    req.user = '59351240' // Bypass auth when in development as DBKynd
+  }
   if (!req.user) return res.redirect('/auth/twitch')
   if (config.allowedToView.indexOf(req.user) === -1)
     return res.redirect('/auth/not_authorized')
