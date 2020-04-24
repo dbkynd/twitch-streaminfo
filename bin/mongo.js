@@ -161,6 +161,13 @@ const ClipChannels = mongoose.model(
   })
 )
 
+const SuspiciousTerms = mongoose.model(
+  'suspicious_terms',
+  new mongoose.Schema({
+    term: String,
+  })
+)
+
 module.exports = {
   connection: mongoose.connection,
   Subscriptions,
@@ -175,4 +182,5 @@ module.exports = {
   Notes,
   Latest,
   ClipChannels,
+  SuspiciousTerms,
 }
