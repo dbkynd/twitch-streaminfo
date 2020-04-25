@@ -41,7 +41,7 @@ router.post('/twitch/following', async (req, res, next) => {
   request
     .post(config.discord.susFollowerWebhookUrl)
     .send({
-      content: `<@&${config.discord.mentionRoleId}> \`\`${data.from_name}\`\``,
+      content: `<@&${config.discord.mentionRoleId}> \`\`${data.from_name}\`\` <https://www.twitch.tv/popout/annemunition/viewercard/${data.from_name}>`,
     })
     .catch((err) => {
       debug('Error sending a SUSPICIOUS FOLLOWER DETECTED Webhook to Discord')
