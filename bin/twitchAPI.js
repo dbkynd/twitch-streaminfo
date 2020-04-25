@@ -103,6 +103,16 @@ module.exports = {
     }
     return fetch(url, headers)
   },
+
+  getUserByIdKraken: (userId) => {
+    const url = `https://api.twitch.tv/kraken/users/${userId}`
+    const headers = {
+      'Client-ID': config.twitch.app.client_id,
+      Authorization: `OAuth ${config.twitch.ps.access_token}`,
+      Accept: 'application/vnd.twitchtv.v5+json',
+    }
+    return fetch(url, headers)
+  },
 }
 
 function fetch(url, headers) {

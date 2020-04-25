@@ -3,6 +3,8 @@ const log = require('winston')
 const debug = require('debug')('streamInfo:routes:webhooks')
 const request = require('snekfetch')
 const config = require('../config')
+const twitchAPI = require('../bin/twitchAPI')
+const moment = require('moment')
 
 const lastHooks = {
   following: [],
@@ -37,6 +39,16 @@ router.post('/twitch/following', async (req, res, next) => {
   const match = await req.db.SuspiciousTerms.findOne(JSON.parse(query))
   // stop if no matching terms
   if (!match || match.length === 0) return
+  // check the account creation date of the user
+  const userData = await twitchAPI.getUserByIdKraken(data.from_id)
+  if (!userData) return
+  // extract the created_at timestamp
+  const creationDate = userData.body.created_at
+  if (!creationDate) return
+  const thresholdDate = moment.utc(creationDate).add(1, 'month')
+  // stop if now is after the set threshold
+  // ie the account is older than 1 month
+  if (moment().isAfter(thresholdDate)) return
   // send webhook to #mod-chat in discord @ing the moderators role
   request
     .post(config.discord.susFollowerWebhookUrl)
