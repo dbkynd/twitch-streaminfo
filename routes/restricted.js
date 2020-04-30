@@ -21,7 +21,7 @@ router.get('/getTips', (req, res, next) => {
   req.db.Tips.find({})
     .sort('-data.created_at')
     .then((results) => {
-      res.json(results.map(parser.tip))
+      res.json(results.filter((x) => x.data).map(parser.tip))
     })
     .catch((err) => {
       log.error(err)
@@ -35,7 +35,7 @@ router.get('/getSubs', (req, res, next) => {
   req.db.Subscriptions.find({})
     .sort('-data.time')
     .then((results) => {
-      res.json(results.map(parser.sub))
+      res.json(results.filter((x) => x.data).map(parser.sub))
     })
     .catch((err) => {
       log.error(err)
@@ -49,7 +49,7 @@ router.get('/getCheers', (req, res, next) => {
   req.db.Cheers.find({})
     .sort('-data.time')
     .then((results) => {
-      res.json(results.map(parser.cheer))
+      res.json(results.filter((x) => x.data).map(parser.cheer))
     })
     .catch((err) => {
       log.error(err)
@@ -63,7 +63,7 @@ router.get('/getHosts', (req, res, next) => {
   req.db.Hosts.find({})
     .sort('-data.created_at')
     .then((results) => {
-      res.json(results.map(parser.host))
+      res.json(results.filter((x) => x.data).map(parser.host))
     })
     .catch((err) => {
       log.error(err)

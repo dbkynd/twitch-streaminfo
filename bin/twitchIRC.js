@@ -153,7 +153,9 @@ module.exports = (io) => {
         created_at: Date.now(),
       },
     })
-    io.emit('host', parser.host(entry))
+    const parsed = parser.host(entry)
+    if (!parsed) return
+    io.emit('host', parsed)
     entry
       .save()
       .then(() => {
@@ -176,8 +178,9 @@ module.exports = (io) => {
       },
       isRaid: true,
     })
-    // Emit to clients
-    io.emit('host', parser.host(entry))
+    const parsed = parser.host(entry)
+    if (!parsed) return
+    io.emit('host', parsed)
     entry
       .save()
       .then(() => {
@@ -213,7 +216,9 @@ module.exports = (io) => {
 
   function subscription(userstate) {
     const entry = new mongo.Subscriptions({ data: userstate })
-    io.emit('sub', parser.sub(entry))
+    const parsed = parser.sub(entry)
+    if (!parsed) return
+    io.emit('sub', parsed)
     entry
       .save()
       .then(() => {
@@ -343,7 +348,9 @@ module.exports = (io) => {
             data: userstate,
             recipients: massGifts[userstate['user-id']].recipients,
           })
-          io.emit('sub', parser.sub(entry))
+          const parsed = parser.sub(entry)
+          if (!parsed) return
+          io.emit('sub', parsed)
           entry
             .save()
             .then(() => {
@@ -369,7 +376,9 @@ module.exports = (io) => {
     )
     const data = { ...userstate, message }
     const entry = new mongo.Cheers({ data })
-    io.emit('cheer', parser.cheer(entry))
+    const parsed = parser.cheer(entry)
+    if (!parsed) return
+    io.emit('cheer', parsed)
     entry
       .save()
       .then(() => {
