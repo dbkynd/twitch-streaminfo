@@ -20,6 +20,7 @@
   "homepage": "https://github.com/dbkynd/twitch-streaminfo#readme",
   "dependencies": {
     "@d-fischer/passport-twitch": "^1.0.5",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "client-oauth2": "^4.2.5",
     "connect-mongo": "^3.2.0",

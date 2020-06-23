@@ -1,7 +1,7 @@
 const config = require('../config')
-const request = require('snekfetch')
 const log = require('winston')
 const debug = require('debug')('streamInfo:twitchAPI')
+const axios = require('axios')
 
 debug('Loading twitchAPI.js')
 
@@ -18,6 +18,15 @@ module.exports = {
 
   getVideos: (id, type = 'all') => {
     const url = `https://api.twitch.tv/helix/videos?user_id=${id}?type=${type}`
+    const headers = {
+      'Client-ID': config.twitch.app.client_id,
+      Authorization: `Bearer ${config.twitch.ps.access_token}`,
+    }
+    return fetch(url, headers)
+  },
+
+  getArchives: () => {
+    const url = `https://api.twitch.tv/helix/videos?user_id=${config.twitch.id}&period=day&type=archive`
     const headers = {
       'Client-ID': config.twitch.app.client_id,
       Authorization: `Bearer ${config.twitch.ps.access_token}`,
@@ -115,13 +124,14 @@ module.exports = {
   },
 }
 
-function fetch(url, headers) {
+function fetch(url, headers = {}) {
   return new Promise((resolve, reject) => {
     function tryRequest() {
-      request
-        .get(url)
-        .set(headers || {})
-        .then(resolve)
+      axios
+        .get(url, { headers })
+        .then(({ data }) => {
+          resolve({ body: data, data })
+        })
         .catch((error) => {
           if (error.body && error.body.status === 429) {
             const resetTime = parseInt(error.headers['ratelimit-reset']) * 1000
