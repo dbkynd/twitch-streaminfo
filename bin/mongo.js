@@ -168,6 +168,15 @@ const SuspiciousTerms = mongoose.model(
   })
 )
 
+const ArchivedVideoLengths = mongoose.model(
+  'archived_videos_lengths',
+  new mongoose.Schema({
+    videoId: String,
+    createdAt: Date,
+    length: Number,
+  })
+)
+
 module.exports = {
   connection: mongoose.connection,
   Subscriptions,
@@ -183,4 +192,5 @@ module.exports = {
   Latest,
   ClipChannels,
   SuspiciousTerms,
+  ArchivedVideoLengths,
 }

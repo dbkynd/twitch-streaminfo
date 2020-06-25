@@ -9,38 +9,22 @@ module.exports = {
   getUser: (identity) => {
     const type = /^\d+$/.test(identity) ? 'id' : 'login'
     const url = `https://api.twitch.tv/helix/users?${type}=${identity}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
   getVideos: (id, type = 'all') => {
     const url = `https://api.twitch.tv/helix/videos?user_id=${id}?type=${type}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
-  getArchives: () => {
-    const url = `https://api.twitch.tv/helix/videos?user_id=${config.twitch.id}&period=day&type=archive`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+  getArchivesKraken: () => {
+    const url = `https://api.twitch.tv/kraken/channels/${config.twitch.id}/videos?broadcast_type=archive`
+    return fetch(url, krakenHeaders())
   },
 
   getGame: (id) => {
     const url = `https://api.twitch.tv/helix/games?id=${id}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
   getTokenData: () => {
@@ -55,24 +39,14 @@ module.exports = {
     const url =
       `https://api.twitch.tv/kraken/channels/${config.twitch.id}/subscriptions` +
       `?offset=${offset}&limit=${limit}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `OAuth ${config.twitch.ps.access_token}`,
-      Accept: 'application/vnd.twitchtv.v5+json',
-    }
-    return fetch(url, headers)
+    return fetch(url, krakenHeaders())
   },
 
   getLiveStreams: (idsArray) => {
     const url = `https://api.twitch.tv/helix/streams/?type=live${idsArray
       .map((x) => `&user_id=${x}`)
       .join('')}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-      Accept: 'application/vnd.twitchtv.v5+json',
-    }
-    return fetch(url, headers)
+    return fetch(url, krakenHeaders())
   },
 
   getUsers: (loginOrIdArray) => {
@@ -84,11 +58,7 @@ module.exports = {
       .join('')
       .replace('&', '?')
     const url = `https://api.twitch.tv/helix/users${query}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
   getGames: (ids) => {
@@ -97,31 +67,33 @@ module.exports = {
       .join('')
       .replace('&', '?')
     const url = `https://api.twitch.tv/helix/games${query}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
   getClip: (stub) => {
     const url = `https://api.twitch.tv/helix/clips?id=${stub}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
-    }
-    return fetch(url, headers)
+    return fetch(url, helixHeaders())
   },
 
   getUserByIdKraken: (userId) => {
     const url = `https://api.twitch.tv/kraken/users/${userId}`
-    const headers = {
-      'Client-ID': config.twitch.app.client_id,
-      Authorization: `OAuth ${config.twitch.ps.access_token}`,
-      Accept: 'application/vnd.twitchtv.v5+json',
-    }
-    return fetch(url, headers)
+    return fetch(url, krakenHeaders())
   },
+}
+
+function helixHeaders() {
+  return {
+    'Client-ID': config.twitch.app.client_id,
+    Authorization: `Bearer ${config.twitch.ps.access_token}`,
+  }
+}
+
+function krakenHeaders() {
+  return {
+    'Client-ID': config.twitch.app.client_id,
+    Authorization: `OAuth ${config.twitch.ps.access_token}`,
+    Accept: 'application/vnd.twitchtv.v5+json',
+  }
 }
 
 function fetch(url, headers = {}) {
