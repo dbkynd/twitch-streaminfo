@@ -252,8 +252,8 @@ angular
     $timeout(checkHours, 1000 * 60 * 20)
 
     function checkHours() {
-      api.getHours().then((hours) => {
-        vm.hours = hours
+      api.getHours().then(({ data }) => {
+        vm.hours = data
       })
     }
   })
