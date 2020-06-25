@@ -24,12 +24,8 @@ async function update() {
 }
 
 async function getHoursThisQuarter() {
-  const startOfQuarter = moment()
-    .quarter(moment().quarter())
-    .startOf('quarter')
-  const endOfQuarter = moment()
-    .quarter(moment().quarter())
-    .endOf('quarter')
+  const startOfQuarter = moment.tz('America/Los_Angeles').startOf('quarter')
+  const endOfQuarter = moment.tz('America/Los_Angeles').endOf('quarter')
   const videosThisQuarter = await Archive.find({
     createdAt: { $gte: startOfQuarter, $lte: endOfQuarter },
   })
