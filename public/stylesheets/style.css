@@ -458,3 +458,7 @@ button:disabled {
 .subs .recipient .amount {
   font-size: 13px;
 }
+
+.hours {
+  color: #6ee118;
+}

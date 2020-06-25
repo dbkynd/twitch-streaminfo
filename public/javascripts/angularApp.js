@@ -11,6 +11,7 @@ angular
       getSubs: () => $http.get('/getSubs'),
       getCheers: () => $http.get('/getCheers'),
       getHosts: () => $http.get('/getHosts'),
+      getHours: () => $http.get('/hours'),
       clearItem: (body) => $http.post('/clearItem', body),
       restart: () => $http.post('/restart', {}),
       saveNote: (note, date) => $http.post('/saveNote', { note, date }),
@@ -41,6 +42,7 @@ angular
     vm.subs = []
     vm.cheers = []
     vm.hosts = []
+    vm.hours = ''
 
     // Show good websocket connection
     io.on('connect', () => {
@@ -245,4 +247,13 @@ angular
 
     vm.time = (timestamp) =>
       moment.unix(timestamp / 1000).format('h:mma M/D/YY')
+
+    checkHours()
+    $timeout(checkHours, 1000 * 60 * 20)
+
+    function checkHours() {
+      api.getHours().then((hours) => {
+        vm.hours = hours
+      })
+    }
   })
