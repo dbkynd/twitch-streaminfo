@@ -12,6 +12,8 @@ const request = require('node-fetch')
 const config = require('../config')
 const { get } = require('lodash')
 const twitchApi = require('../bin/twitchAPI')
+const { getHoursThisQuarter } = require('../bin/hoursStreamed')
+
 require('moment-timezone')
 
 router.get('/uptime', (req, res, next) => {
@@ -272,6 +274,15 @@ router.get('/clips', async (req, res, next) => {
         )
     }
   }
+
+  router.get('/hours', async (req, res, next) => {
+    try {
+      const hours = await getHoursThisQuarter()
+      res.status(200).send(hours)
+    } catch (e) {
+      next(e)
+    }
+  })
 })
 
 module.exports = (io) => {

@@ -42,6 +42,7 @@ async function getHoursThisQuarter() {
 
 module.exports = () => {
   // Process videos every 20 minutes
+  update().catch()
   setInterval(update, 1000 * 60 * 20)
   return {
     getHoursThisQuarter,
