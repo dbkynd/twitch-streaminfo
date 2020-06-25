@@ -279,7 +279,7 @@ router.get('/clips', async (req, res, next) => {
 router.get('/hours', async (req, res, next) => {
   try {
     const hours = await hoursStreamed.getHoursThisQuarter()
-    res.status(200).send(hours)
+    res.status(200).send(hours.toString())
   } catch (e) {
     next(e)
   }
