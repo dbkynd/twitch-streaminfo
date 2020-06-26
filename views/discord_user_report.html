@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Discord User Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+  <v-app>
+    <v-main>
+      <v-container>
+        <v-row>
+          <v-col>
+            <v-row justify="center">
+              <div class="text-h1" :style="{ color: anneYellow }">Discord User Report</div>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="6">
+                <v-form lazy-validation :value="valid" ref="form">
+                  <v-text-field
+                    v-model="reporter"
+                    validate-on-blur
+                    outlined
+                    label="Your Name (Optional)"
+                    full-width
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="reported"
+                    validate-on-blur
+                    outlined
+                    label="Reporting Discord Name"
+                    required
+                    full-width
+                  ></v-text-field>
+                  <v-textarea
+                    v-model="content"
+                    outlined
+                    auto-grow
+                    counter="2000"
+                    label="Message"
+                    required
+                    full-width
+                  ></v-textarea>
+                  <v-chips>
+
+                  </v-chips>
+                  <v-row>
+                    <v-btn color="blue">
+                      Add File
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green" @click="submit()">
+                      Submit
+                    </v-btn>
+                  </v-row>
+                </v-form>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
+</div>
+</body>
+<script>
+  const discordNameRegEx = /.+\d{4}/
+
+  new Vue({
+    el: '#app',
+    vuetify: new Vuetify({
+      theme: { dark: true },
+    }),
+
+    data() {
+      return {
+        anneYellow: '#f9d81b',
+        reporter: null,
+        reported: null,
+        content: null,
+        valid: true,
+      }
+    },
+
+    computed: {},
+
+    methods: {
+      submit() {
+        if (!this.$refs.form.validate()) return
+        alert('SUBMITTED')
+      },
+    },
+  })
+</script>
+</html>
