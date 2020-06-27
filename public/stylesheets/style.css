@@ -419,12 +419,6 @@ button:disabled {
   position: relative;
 }
 
-.marker {
-  background-color: #3d7ba6;
-  position: absolute;
-  right: 0;
-}
-
 .recipient span {
   font-size: 14px;
 }

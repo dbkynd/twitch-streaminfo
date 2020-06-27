@@ -409,10 +409,6 @@ module.exports = (io) => {
       const action = enabled ? 'on' : 'off'
       say(`!raidmode ${action}`)
     })
-
-    socket.on('add_marker', () => {
-      say('/marker')
-    })
   })
 }
 

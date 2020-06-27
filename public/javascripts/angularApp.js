@@ -240,11 +240,6 @@ angular
       vm.note = null
     }
 
-    vm.addMarker = () => {
-      if (!editor) return
-      io.emit('add_marker')
-    }
-
     vm.time = (timestamp) =>
       moment.unix(timestamp / 1000).format('h:mma M/D/YY')
 
