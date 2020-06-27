@@ -2,7 +2,6 @@ const router = require('express').Router() // eslint-disable-line new-cap
 const config = require('../config')
 const log = require('winston')
 const parser = require('../bin/parser')
-const googleSheets = require('../bin/googleSheet')
 const path = require('path')
 
 // Main index page
@@ -77,21 +76,6 @@ router.post('/restart', (req, res, next) => {
   if (config.allowedToEdit.indexOf(req.user) === -1) return res.sendStatus(403)
   res.sendStatus(200)
   process.exit(0)
-})
-
-router.post('/saveNote', (req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  Promise.all([
-    new req.db.Notes(req.body).save(),
-    googleSheets.saveNote(req.body),
-  ])
-    .then(() => {
-      res.sendStatus(200)
-    })
-    .catch((err) => {
-      log.error(err)
-      res.sendStatus(503)
-    })
 })
 
 // SUSPICIOUS FOLLOWER TERM ROUTES

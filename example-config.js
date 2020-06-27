@@ -27,10 +27,4 @@ module.exports = {
     token: '',
   },
   minutesBeforeConsideredOffline: 15,
-  highlights: {
-    googleSheetID: '',
-    googleSheetID2: '',
-    googleSheetID3: '',
-    alterTimeStampSeconds: 40,
-  },
 }

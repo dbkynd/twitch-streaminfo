@@ -1,7 +1,6 @@
 const router = require('express').Router() // eslint-disable-line new-cap
 const uptime = require('../bin/uptime')
 const games = require('../bin/lastGames')
-const googleSheet = require('../bin/googleSheet')
 const moment = require('moment')
 const log = require('winston')
 const liveSubs = require('../bin/liveSubs')
@@ -67,20 +66,6 @@ router.get('/games', (req, res, next) => {
     })
     .catch(() => {
       res.sendStatus(503)
-    })
-})
-
-router.get('/highlight', (req, res) => {
-  const query = req.query.q || ''
-  const user = req.query.u || ''
-  googleSheet
-    .saveHighlight(query, user)
-    .then((response) => {
-      res.send(response)
-    })
-    .catch((err) => {
-      log.error(err)
-      res.send('There was an error saving that moment. BibleThump')
     })
 })
 

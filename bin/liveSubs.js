@@ -4,7 +4,6 @@ const twitchDB = require('./twitchDB')
 const config = require('../config')
 const utils = require('./utilities')
 const fs = require('fs')
-const googleSheet = require('./googleSheet')
 const debug = require('debug')('streamInfo:liveSubs')
 
 debug('Loading liveSubs.js')
@@ -58,7 +57,6 @@ function getSubs() {
           if (chunk) subs.push(chunk)
         }
         subscribers = subs.map((x) => x.map((y) => y.user._id))
-        googleSheet.updateSubscriberDataSheet(response.body._total, subs)
         debug(`Done getting Subscribers (${subscribers.length})`)
         fs.writeFile(
           './subscribers',
