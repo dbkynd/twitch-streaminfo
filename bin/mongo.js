@@ -136,15 +136,6 @@ const Counts = mongoose.model(
   })
 )
 
-// Stream Notes
-const Notes = mongoose.model(
-  'notes',
-  new mongoose.Schema({
-    note: String,
-    date: Date,
-  })
-)
-
 // Latest Events
 const Latest = mongoose.model(
   'latests',
@@ -188,7 +179,6 @@ module.exports = {
   TwitchGames,
   Reported,
   Counts,
-  Notes,
   Latest,
   ClipChannels,
   SuspiciousTerms,

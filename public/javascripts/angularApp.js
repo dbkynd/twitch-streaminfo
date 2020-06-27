@@ -14,7 +14,6 @@ angular
       getHours: () => $http.get('/hours'),
       clearItem: (body) => $http.post('/clearItem', body),
       restart: () => $http.post('/restart', {}),
-      saveNote: (note, date) => $http.post('/saveNote', { note, date }),
     }
   })
   .factory('io', (socketFactory) => {
@@ -212,33 +211,6 @@ angular
 
     // Function to parse injected html text
     vm.toTrustedHTML = (html) => $sce.trustAsHtml(html)
-
-    vm.saveNote = () => {
-      if (!editor) return
-      const date = Date.now()
-      vm.saving = true
-      api
-        .saveNote(vm.note || null, date)
-        .then(() => {
-          vm.saving = false
-          vm.note = null
-          vm.saveNoteOk = true
-          $timeout(() => {
-            vm.saveNoteOk = null
-          }, 200)
-        })
-        .catch(() => {
-          vm.saving = false
-          vm.saveNoteError = true
-          $timeout(() => {
-            vm.saveNoteError = null
-          }, 200)
-        })
-    }
-
-    vm.clearNote = () => {
-      vm.note = null
-    }
 
     vm.time = (timestamp) =>
       moment.unix(timestamp / 1000).format('h:mma M/D/YY')
