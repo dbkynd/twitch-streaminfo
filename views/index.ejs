@@ -137,19 +137,6 @@
             </div>
         </div>
         <div class="column">
-            <div class="save_note">
-                <textarea ng-model="ctrl.note" placeholder="Notes..." ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }"></textarea>
-                <div class="buttons">
-                    <button ng-click="ctrl.saveNote()" class="save" ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }">Save
-                    </button>
-                    <button ng-click="ctrl.clearNote()" class="clear" ng-disabled="ctrl.saving" ng-class="{ disabled: ctrl.saving }">Clear
-                    </button>
-                    <span class="save_reply" ng-class="{ ok: ctrl.saveNoteOk, error: ctrl.saveNoteError}"></span>
-                    <button class="marker" ng-click="ctrl.addMarker()">Add Marker</button>
-                </div>
-            </div>
-        </div>
-        <div class="column">
             <div class="hours">
                 <h3>Hours Streamed: {{ctrl.hours}}</h3>
             </div>
