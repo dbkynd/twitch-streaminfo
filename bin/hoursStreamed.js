@@ -20,6 +20,7 @@ async function update() {
       },
     })
   })
+  if (operations.length === 0) return
   await Archive.bulkWrite(operations)
 }
 
