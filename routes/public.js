@@ -15,6 +15,12 @@ const hoursStreamed = require('../bin/hoursStreamed')()
 const discordUserReports = require('../bin/discordUserReports')
 const path = require('path')
 const multer = require('multer')
+const rateLimit = require('express-rate-limit')
+
+const reportLimiter = rateLimit({
+  windowMs: 1000 * 60 * 60, // 1 hour
+  max: 3, // limit each IP to 3 requests per windowMs
+})
 
 require('moment-timezone')
 
@@ -279,6 +285,7 @@ router.get('/discord_user_report', (req, res, next) => {
 
 router.post(
   '/discord_user_report',
+  reportLimiter,
   multer().array('files'),
   async (req, res, next) => {
     try {
