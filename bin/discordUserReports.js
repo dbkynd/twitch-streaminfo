@@ -27,6 +27,9 @@ module.exports = async ({ body, files }) => {
 
   await hook.send(`@ here\n\n${message.replace(urlRegEx, '<$1>')}`, {
     username: `REPORT #${entry.id} | From: ${reporter} | Against: ${reported}`,
+    allowedMentions: {
+      parse: [],
+    },
     files: attachments,
   })
 }
