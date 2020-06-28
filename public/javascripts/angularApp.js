@@ -31,7 +31,8 @@ angular
     io,
     $scope,
     $log,
-    $timeout
+    $timeout,
+    $interval
   ) {
     const vm = this // eslint-disable-line
     // Create an object to keep our status info
@@ -41,7 +42,8 @@ angular
     vm.subs = []
     vm.cheers = []
     vm.hosts = []
-    vm.hours = ''
+    vm.hoursThisQuarter = ''
+    vm.hoursLastQuarter = ''
 
     // Show good websocket connection
     io.on('connect', () => {
@@ -216,11 +218,12 @@ angular
       moment.unix(timestamp / 1000).format('h:mma M/D/YY')
 
     checkHours()
-    $timeout(checkHours, 1000 * 60 * 20)
+    $interval(checkHours, 1000 * 60 * 20)
 
     function checkHours() {
       api.getHours().then(({ data }) => {
-        vm.hours = data
+        vm.hoursThisQuarter = data.thisQuarter
+        vm.hoursLastQuarter = data.lastQuarter
       })
     }
   })

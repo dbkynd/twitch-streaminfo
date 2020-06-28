@@ -27,10 +27,23 @@ async function update() {
 async function getHoursThisQuarter() {
   const startOfQuarter = moment.tz('America/Los_Angeles').startOf('quarter')
   const endOfQuarter = moment.tz('America/Los_Angeles').endOf('quarter')
-  const videosThisQuarter = await Archive.find({
-    createdAt: { $gte: startOfQuarter, $lte: endOfQuarter },
+  const startOfLastQuarter = moment(startOfQuarter)
+    .subtract(1, 'quarter')
+    .startOf('quarter')
+  const endOfLastQuarter = moment(endOfQuarter)
+    .subtract(1, 'quarter')
+    .endOf('quarter')
+  return {
+    thisQuarter: await getHours(startOfQuarter, endOfQuarter),
+    lastQuarter: await getHours(startOfLastQuarter, endOfLastQuarter),
+  }
+}
+
+async function getHours(start, end) {
+  const videos = await Archive.find({
+    createdAt: { $gte: start, $lte: end },
   })
-  const sum = videosThisQuarter.reduce((prev, next) => {
+  const sum = videos.reduce((prev, next) => {
     return prev + next.length
   }, 0)
   const duration = moment.duration(sum, 'seconds')
