@@ -46,7 +46,7 @@ module.exports = {
     const url = `https://api.twitch.tv/helix/streams/?type=live${idsArray
       .map((x) => `&user_id=${x}`)
       .join('')}`
-    return fetch(url, krakenHeaders())
+    return fetch(url, helixHeaders())
   },
 
   getUsers: (loginOrIdArray) => {
