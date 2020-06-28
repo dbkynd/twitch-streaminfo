@@ -12,6 +12,9 @@ const config = require('../config')
 const { get } = require('lodash')
 const twitchApi = require('../bin/twitchAPI')
 const hoursStreamed = require('../bin/hoursStreamed')()
+const discordUserReports = require('../bin/discordUserReports')
+const path = require('path')
+const multer = require('multer')
 
 require('moment-timezone')
 
@@ -269,6 +272,23 @@ router.get('/hours', async (req, res, next) => {
     next(e)
   }
 })
+
+router.get('/discord_user_report', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../views/discord_user_report.html'))
+})
+
+router.post(
+  '/discord_user_report',
+  multer().array('files'),
+  async (req, res, next) => {
+    try {
+      await discordUserReports(req)
+      res.sendStatus(204)
+    } catch (e) {
+      next(e)
+    }
+  }
+)
 
 module.exports = (io) => {
   router.get('/sub_games_advance_queue', (req, res, next) => {

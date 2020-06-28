@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 const config = require('../config')
 const moment = require('moment')
 const debug = require('debug')('streamInfo:mongo')
+const AutoIncrement = require('mongoose-sequence')(mongoose)
+
 mongoose.Promise = global.Promise
 
 debug('Loading mongo.js')
@@ -168,6 +170,17 @@ const ArchivedVideoLengths = mongoose.model(
   })
 )
 
+const discordUserReportsSchema = new mongoose.Schema({
+  reporter: String,
+  reported: String,
+  message: String,
+})
+discordUserReportsSchema.plugin(AutoIncrement, { inc_field: 'id' })
+const DiscordUserReports = mongoose.model(
+  'discord_user_reports',
+  discordUserReportsSchema
+)
+
 module.exports = {
   connection: mongoose.connection,
   Subscriptions,
@@ -183,4 +196,5 @@ module.exports = {
   ClipChannels,
   SuspiciousTerms,
   ArchivedVideoLengths,
+  DiscordUserReports,
 }

@@ -2,62 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Discord User Report</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <title>Armory Discord User Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
   <v-app>
-    <v-main>
+    <v-content>
       <v-container>
         <v-row>
           <v-col>
-            <v-row justify="center">
-              <div class="text-h1" :style="{ color: anneYellow }">Discord User Report</div>
+            <v-row justify="center" class="mb-10">
+              <div class="text-h2" style="color: #f9d81b;">Armory Discord User Report</div>
+            </v-row>
+            <v-row justify="center" no-gutters>
+              <v-col cols="6">
+                <div>
+                  <p class="text-body-1 text-center">Use this form to report if an Armory Discord member is making you
+                    feel uncomfortable or acting against the rules. Including but not limited to sexist/racist
+                    remarks, other forms of hate speech, and posting NSFW content.</p>
+                  <p class="text-body-1 text-center">You can opt to report anonymously, but providing your Discord name
+                    will allow us to follow up with you in the future.</p>
+                  <p class="text-body-1 text-center">Feel free to share Discord message links ("Copy Message Link" in
+                    the "More" menu alongside the message in question), and upload screenshots. The more info you
+                    provide, the better we are able to assist and make decisions.</p>
+                </div>
+              </v-col>
             </v-row>
             <v-row justify="center">
               <v-col cols="6">
-                <v-form lazy-validation :value="valid" ref="form">
+                <v-form lazy-validation ref="form">
                   <v-text-field
                     v-model="reporter"
+                    :rules="discordNameOptional"
                     validate-on-blur
                     outlined
-                    label="Your Name (Optional)"
+                    label="Your Discord Name (Optional)"
                     full-width
                   ></v-text-field>
                   <v-text-field
                     v-model="reported"
+                    :rules="discordNameRequired"
                     validate-on-blur
                     outlined
-                    label="Reporting Discord Name"
-                    required
+                    label="Who are you reporting? (Full Discord Name)"
                     full-width
                   ></v-text-field>
                   <v-textarea
-                    v-model="content"
+                    v-model="message"
+                    :rules="messageRules"
                     outlined
                     auto-grow
-                    counter="2000"
+                    :counter="maxMessageLength"
                     label="Message"
-                    required
                     full-width
                   ></v-textarea>
-                  <v-chips>
-
-                  </v-chips>
-                  <v-row>
-                    <v-btn color="blue">
-                      Add File
+                  <v-file-input
+                    ref="fileInput"
+                    v-model="files"
+                    v-if="attachments"
+                    full-width
+                    chips
+                    :counter="maxFiles"
+                    label="Click here to attach files"
+                    multiple
+                    outlined
+                    small-chips
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-paperclip"
+                    :loading="sending"
+                    show-size
+                    :rules="fileRules"
+                  ></v-file-input>
+                  <v-row class="mt-4">
+                    <v-btn color="blue" v-if="!attachments" @click="attach()">
+                      Attach Files
+                      <v-icon right>mdi-paperclip</v-icon>
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn color="green" @click="submit()">
+                    <v-btn @click="submit()" color="green">
                       Submit
+                      <v-icon right>mdi-email-send</v-icon>
                     </v-btn>
                   </v-row>
                 </v-form>
@@ -66,10 +93,29 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-main>
+
+      <v-dialog v-model="success" max-width="320">
+        <v-card color="green darken-3">
+          <v-card-title class="headline">Thank You</v-card-title>
+          <v-card-text>Your report has been sent successfully.</v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="error" max-width="320">
+        <v-card color="red darken-3">
+          <v-card-title class="headline">Error</v-card-title>
+          <v-card-text>There was an error submitting your report. Please try again.</v-card-text>
+        </v-card>
+      </v-dialog>
+
+    </v-content>
   </v-app>
 </div>
-</body>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
 <script>
   const discordNameRegEx = /.+\d{4}/
 
@@ -81,22 +127,101 @@
 
     data() {
       return {
-        anneYellow: '#f9d81b',
         reporter: null,
         reported: null,
-        content: null,
-        valid: true,
+        message: null,
+        attachments: false,
+        files: [],
+        success: false,
+        error: false,
+        sending: false,
+        maxFiles: 5,
+        maxMessageLength: 1900,
       }
     },
 
-    computed: {},
+    computed: {
+
+      discordNameOptional() {
+        return [
+          v => !v || discordNameRegEx.test(v) || 'User discriminator required (#0001).',
+        ]
+      },
+
+      discordNameRequired() {
+        return [
+          v => !!v || 'Required',
+          v => discordNameRegEx.test(v) || 'User discriminator required (#0001).',
+        ]
+      },
+
+      fileRules() {
+        return [
+          v => v.length <= this.maxFiles || 'Too many files selected.',
+          v => {
+            if (v.length) {
+              for (let i = 0; i < v.length; i++) {
+                if (v[i].size > 8000000) return 'Each file must be smaller than 8.0MB.'
+              }
+            }
+            return true
+          },
+        ]
+      },
+
+      messageRules() {
+        return [
+          v => !!v || 'Required',
+          v => v && v.length <= this.maxMessageLength || 'Message is too long.',
+        ]
+      },
+    },
 
     methods: {
+      attach() {
+        this.attachments = true
+        //this.$refs.fileInput.click()
+      },
+
       submit() {
         if (!this.$refs.form.validate()) return
-        alert('SUBMITTED')
+        this.sending = true
+
+        let formData = new FormData()
+        formData.append('reporter', this.reporter || 'Anonymous')
+        formData.append('reported', this.reported)
+        formData.append('message', this.message)
+
+        if (this.files.length) {
+          for (let file of this.files) {
+            formData.append('files', file, file.name)
+          }
+        }
+
+        axios.post(`/discord_user_report`, formData)
+          .then(this.onSuccess)
+          .catch(this.onError)
+          .finally(() => {
+            this.sending = false
+          })
+      },
+
+      onSuccess() {
+        this.success = true
+        setTimeout(() => {
+          this.$refs.form.reset()
+          this.success = false
+        }, 2000)
+      },
+
+      onError() {
+        this.error = true
+        setTimeout(() => {
+          this.error = false
+        }, 2000)
       },
     },
   })
 </script>
+</body>
 </html>
