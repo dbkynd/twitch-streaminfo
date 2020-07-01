@@ -25,14 +25,28 @@ async function update() {
 }
 
 async function getHoursThisQuarter() {
-  const startOfQuarter = moment.tz('America/Los_Angeles').startOf('quarter')
-  const endOfQuarter = moment.tz('America/Los_Angeles').endOf('quarter')
-  const startOfLastQuarter = moment(startOfQuarter)
-    .subtract(1, 'quarter')
+  const startOfQuarter = moment
+    .tz('America/Los_Angeles')
     .startOf('quarter')
-  const endOfLastQuarter = moment(endOfQuarter)
-    .subtract(1, 'quarter')
+    .subtract(1, 'month')
+    .startOf('month')
+  const endOfQuarter = moment
+    .tz('America/Los_Angeles')
     .endOf('quarter')
+    .subtract(1, 'month')
+    .endOf('month')
+  const startOfLastQuarter = moment
+    .tz('America/Los_Angeles')
+    .startOf('quarter')
+    .subtract(1, 'quarter')
+    .subtract(1, 'month')
+    .startOf('month')
+  const endOfLastQuarter = moment
+    .tz('America/Los_Angeles')
+    .endOf('quarter')
+    .subtract(1, 'quarter')
+    .subtract(1, 'month')
+    .endOf('month')
   return {
     thisQuarter: await getHours(startOfQuarter, endOfQuarter),
     lastQuarter: await getHours(startOfLastQuarter, endOfLastQuarter),
