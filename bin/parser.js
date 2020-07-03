@@ -73,6 +73,7 @@ module.exports = {
       recipients,
       giftCount: count(entry.data['msg-param-mass-gift-count']),
       streak: showStreak ? count(entry.data['msg-param-streak-months']) : null,
+      giftMonths: count(entry.data['msg-param-gift-months']),
     }
   },
   tip: (entry) => {

@@ -56,6 +56,7 @@
                         <div class='time'>{{ctrl.time(sub.timestamp)}}</div>
                         <div class='message' ng-show="sub.type === 'subgift'">
                             <span class="gifter">{{sub.name}}</span> gifted:
+                            <span ng-show="sub.giftMonths && sub.giftMonths > 1" class='amount' style="font-size: 14px;">{{sub.giftMonths}} Months</span>
                         </div>
                         <div class='message' ng-show="sub.type === 'submysterygift'">
                             <span class="gifter">{{sub.name}}</span> gifted
