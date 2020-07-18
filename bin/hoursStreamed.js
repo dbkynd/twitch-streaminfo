@@ -10,7 +10,7 @@ async function update() {
   const lockedIds = locked.map((x) => x.videoId)
   const operations = []
   videos.forEach((video) => {
-    if (lockedIds.includes(video.broadcast_id)) return
+    if (lockedIds.includes(video.broadcast_id.toString())) return
     operations.push({
       updateOne: {
         filter: { videoId: video.broadcast_id },
