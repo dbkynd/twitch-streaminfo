@@ -10,7 +10,7 @@ async function update() {
   videos.forEach((video) => {
     operations.push({
       updateOne: {
-        filter: { videoId: video.broadcast_id },
+        filter: { videoId: video.broadcast_id, locked: { $ne: true } },
         update: {
           videoId: video.broadcast_id,
           createdAt: video.created_at,

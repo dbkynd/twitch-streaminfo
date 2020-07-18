@@ -167,6 +167,7 @@ const ArchivedVideoLengths = mongoose.model(
     videoId: String,
     createdAt: Date,
     length: Number,
+    locked: Boolean,
   })
 )
 

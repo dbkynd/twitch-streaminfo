@@ -18,7 +18,7 @@ module.exports = {
   },
 
   getArchivesKraken: () => {
-    const url = `https://api.twitch.tv/kraken/channels/${config.twitch.id}/videos?broadcast_type=archive`
+    const url = `https://api.twitch.tv/kraken/channels/${config.twitch.id}/videos?broadcast_type=archive&limit=100`
     return fetch(url, krakenHeaders())
   },
 
