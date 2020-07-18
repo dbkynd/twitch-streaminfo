@@ -6,11 +6,14 @@ const _ = require('lodash')
 async function update() {
   const { body } = await twitchAPI.getArchivesKraken()
   const { videos } = body
+  const locked = await Archive.find({ locked: true })
+  const lockedIds = locked.map((x) => x.videoId)
   const operations = []
   videos.forEach((video) => {
+    if (lockedIds.includes(video.broadcast_id)) return
     operations.push({
       updateOne: {
-        filter: { videoId: video.broadcast_id, locked: { $ne: true } },
+        filter: { videoId: video.broadcast_id },
         update: {
           videoId: video.broadcast_id,
           createdAt: video.created_at,
