@@ -11,7 +11,7 @@ debug('Loading mongo.js')
 
 // Check that we have a valid mongo uri
 const mongoURI = new RegExp(
-  '^(mongodb:(?:\\/{2})?)((\\w+?):(\\w+?)@|:?@?)(.*?):?(\\d+?)?\\/(.+?)\\/?$'
+  '^(mongodb(\\+srv)?:(?:\\/{2})?)((\\w+?):(\\w+?)@|:?@?)(.*?)\\/(.*)\\?(.*)$'
 )
 if (!config.mongoUri || !mongoURI.test(config.mongoUri)) {
   log.error('The config.mongoURI is not valid')
