@@ -1,6 +1,7 @@
 const log = require('winston')
 const config = require('../config')
 const debug = require('debug')('streamInfo:utilities')
+const moment = require('moment-timezone')
 
 debug('Loading utilities.js')
 
@@ -38,4 +39,33 @@ module.exports = {
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
   },
+
+  determineTimeRage: () => {
+    const startOfQuarter = qMonths(moment.tz('America/Los_Angeles')).startOf(
+      'month'
+    )
+    const endOfQuarter = moment(startOfQuarter)
+      .add(2, 'months')
+      .endOf('month')
+    const startOfLastQuarter = moment(startOfQuarter)
+      .subtract(3, 'months')
+      .startOf('month')
+    const endOfLastQuarter = moment(endOfQuarter)
+      .subtract(3, 'months')
+      .endOf('month')
+    return {
+      startOfLastQuarter,
+      endOfLastQuarter,
+      startOfQuarter,
+      endOfQuarter,
+    }
+  },
+}
+
+function qMonths(date) {
+  const month = date.month() + 1
+  if (month % 3 !== 0) {
+    qMonths(date.subtract(1, 'month'))
+  }
+  return date
 }

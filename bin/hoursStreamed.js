@@ -2,6 +2,7 @@ const moment = require('moment-timezone')
 const twitchAPI = require('./twitchAPI')
 const Archive = require('./mongo').ArchivedVideoLengths
 const _ = require('lodash')
+const utils = require('./utilities')
 
 async function update() {
   const { body } = await twitchAPI.getArchivesKraken()
@@ -28,28 +29,12 @@ async function update() {
 }
 
 async function getHoursThisQuarter() {
-  const startOfQuarter = moment
-    .tz('America/Los_Angeles')
-    .startOf('quarter')
-    .add(2, 'months')
-    .startOf('month')
-  const endOfQuarter = moment
-    .tz('America/Los_Angeles')
-    .startOf('quarter')
-    .add(4, 'months')
-    .endOf('month')
-  const startOfLastQuarter = moment
-    .tz('America/Los_Angeles')
-    .subtract(1, 'quarter')
-    .startOf('quarter')
-    .add(2, 'months')
-    .startOf('month')
-  const endOfLastQuarter = moment
-    .tz('America/Los_Angeles')
-    .subtract(1, 'quarter')
-    .startOf('quarter')
-    .add(4, 'months')
-    .endOf('month')
+  const {
+    startOfQuarter,
+    startOfLastQuarter,
+    endOfQuarter,
+    endOfLastQuarter,
+  } = utils.determineTimeRage()
   return {
     thisQuarter: await getHours(startOfQuarter, endOfQuarter),
     lastQuarter: await getHours(startOfLastQuarter, endOfLastQuarter),
