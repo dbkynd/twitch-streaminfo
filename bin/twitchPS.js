@@ -2,11 +2,9 @@ const TwitchPS = require('twitchps')
 const config = require('../config')
 const log = require('winston')
 const status = require('./status')
-const utils = require('./utilities')
-const twitchMessages = require('./twitchMessages')
-const twitchAPI = require('./twitchAPI')
 const debug = require('debug')('streamInfo:twitchPS')
 const report = require('../bin/report')
+const discordWebhooks = require('./discordWebhooks')
 
 debug('Loading twitchPS.js')
 
@@ -56,29 +54,8 @@ module.exports = (io) => {
       delete banEventTimeoutCache.banned[data.target]
     }, 1000 * 10)
     log.info(`'${data.target}' was banned for: ${data.reason}`)
+    discordWebhooks.ban(data)
     report.newReport(data.target)
-    const messages = twitchMessages.cache[data.target.toLowerCase()] || []
-    io.emit('discord_ban_event', {
-      banee:
-        utils.displayName(
-          utils.get(['body', 'data', 0], await twitchAPI.getUser(data.target))
-        ) || data.target_user_id,
-      banee_id: data.target_user_id,
-      banear:
-        utils.displayName(
-          utils.get(
-            ['body', 'data', 0],
-            await twitchAPI.getUser(data.created_by)
-          )
-        ) || data.created_by_user_id,
-      banear_id: data.created_by_user_id,
-      reason: data.reason,
-      messages,
-      time: Date.now(),
-    })
-    log.info('Ban Emitted')
-    if (twitchMessages.cache[data.target.toLowerCase()])
-      delete twitchMessages.cache[data.target.toLowerCase()]
   })
 
   ps.on('unban', async (data) => {
@@ -88,22 +65,6 @@ module.exports = (io) => {
       delete banEventTimeoutCache.unbanned[data.target]
     }, 1000 * 10)
     log.info(`'${data.target}' was un-banned`)
-    io.emit('discord_unban_event', {
-      banee:
-        utils.displayName(
-          utils.get(['body', 'data', 0], await twitchAPI.getUser(data.target))
-        ) || data.target_user_id,
-      banee_id: data.target_user_id,
-      banear:
-        utils.displayName(
-          utils.get(
-            ['body', 'data', 0],
-            await twitchAPI.getUser(data.created_by)
-          )
-        ) || data.created_by_user_id,
-      banear_id: data.created_by_user_id,
-      time: Date.now(),
-    })
-    log.info('Un-Ban Emitted')
+    discordWebhooks.unban(data)
   })
 }
