@@ -131,7 +131,7 @@
                         <div class='time'>{{ctrl.time(host.timestamp)}}</div>
                         <span class='username'>{{host.name}}</span>
                         {{host.isRaid ? 'raided' : 'hosted'}} with
-                        <span class='amount'>{{host.viewers}}</span>
+                        <span class='amount'>{{ctrl.hostAmount(host.viewers)}}</span>
                         viewer{{host.viewers === 1 ? '' : 's'}}
                     </li>
                 </ul>

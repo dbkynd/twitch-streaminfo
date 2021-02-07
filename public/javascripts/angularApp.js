@@ -217,6 +217,11 @@ angular
     vm.time = (timestamp) =>
       moment.unix(timestamp / 1000).format('h:mma M/D/YY')
 
+    vm.hostAmount = (amount) => {
+      if (amount === 'true' || amount === true) return 1
+      return amount
+    }
+
     checkHours()
     $interval(checkHours, 1000 * 60 * 20)
 
