@@ -7,7 +7,7 @@ const { ClipChannels } = require('../bin/mongo')
 debug('Loading twitchMessages.js')
 
 const messageCache = {}
-const clipsReg = /clips\.twitch\.tv\/(\w+)|twitch.tv\/\w+\/clip\/(\w+)/
+const clipsReg = /clips\.twitch\.tv\/([\w-]+)|twitch.tv\/\w+\/clip\/([\w-]+)/
 const permitted = new Map()
 
 function process(channel, userstate, message, io, twitch) {
