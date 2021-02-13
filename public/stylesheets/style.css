@@ -337,7 +337,7 @@ input:checked + .slider::before {
 
 #right-container {
   position: absolute;
-  right: 5px;
+  right: -8px;
   bottom: 5px;
   background-color: unset;
 }
