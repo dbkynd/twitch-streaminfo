@@ -295,7 +295,7 @@ router.get('/multi', async (req, res, next) => {
     const multiReply = multiCommand[0].reply
       .toLowerCase()
       .replace(/^.*http/, 'http')
-      .replace('annemunition/', '')
+      .replace(/annemunition\/?/, '')
     res.send(multiReply)
   } catch (e) {
     next(e)
