@@ -12,6 +12,7 @@ angular
       getCheers: () => $http.get('/getCheers'),
       getHosts: () => $http.get('/getHosts'),
       getHours: () => $http.get('/hours'),
+      getMulti: () => $http.get('/multi'),
       clearItem: (body) => $http.post('/clearItem', body),
       restart: () => $http.post('/restart', {}),
     }
@@ -220,6 +221,12 @@ angular
     vm.hostAmount = (amount) => {
       if (amount === 'true' || amount === true) return 1
       return amount
+    }
+
+    vm.openMulti = () => {
+      api.getMulti().then((res) => {
+        window.open(res.data, '_blank')
+      })
     }
 
     checkHours()

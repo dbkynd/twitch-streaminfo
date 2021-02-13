@@ -16,6 +16,7 @@ const discordUserReports = require('../bin/discordUserReports')
 const path = require('path')
 const multer = require('multer')
 const rateLimit = require('express-rate-limit')
+const axios = require('axios')
 
 const reportLimiter = rateLimit({
   windowMs: 1000 * 60 * 60, // 1 hour
@@ -274,6 +275,28 @@ router.get('/hours', async (req, res, next) => {
   try {
     const hours = await hoursStreamed.getHoursThisQuarter()
     res.status(200).json(hours)
+  } catch (e) {
+    next(e)
+  }
+})
+
+router.get('/multi', async (req, res, next) => {
+  try {
+    const { data: commands } = await axios.get(
+      `https://api.streamelements.com/kappa/v2/bot/commands/${config.streamElements.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${config.streamElements.token}`,
+        },
+      }
+    )
+    const multiCommand = commands.filter((x) => x.command === 'multi')
+    if (!multiCommand.length) return res.sendStatus(404)
+    const multiReply = multiCommand[0].reply
+      .toLowerCase()
+      .replace(/^.*http/, 'http')
+      .replace('annemunition/', '')
+    res.send(multiReply)
   } catch (e) {
     next(e)
   }

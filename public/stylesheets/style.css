@@ -25,7 +25,7 @@ body {
   z-index: 3;
 }
 
-.statusBar span, .statusBar div {
+.statusBar span, .statusBar span span {
   margin: 3px;
   padding: 2px 10px;
   background: #e83c3c;
@@ -335,12 +335,27 @@ input:checked + .slider::before {
   height: 14px;
 }
 
-.followers {
+#right-container {
   position: absolute;
   right: 5px;
   bottom: 5px;
-  background-color: #4e9545 !important;
-  color: #000;
+  background-color: unset;
+}
+
+#followers {
+  background-color: #4e9545;
+  color: #fff;
+  cursor: pointer;
+}
+
+#right-container a {
+  text-decoration: none;
+}
+
+#multi {
+  background-color: #be53bc;
+  color: #fff;
+  cursor: pointer;
 }
 
 .gifter {
