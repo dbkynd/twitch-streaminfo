@@ -48,7 +48,7 @@
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
     "snekfetch": "^4.0.4",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^2.3.0",
     "tmi.js": "^1.5.0",
     "twitchps": "github:dbkynd/twitchps",
