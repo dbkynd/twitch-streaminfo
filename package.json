@@ -42,7 +42,7 @@
     "mongoose-sequence": "^5.2.2",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "passport": "^0.4.1",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
