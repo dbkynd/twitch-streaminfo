@@ -184,9 +184,9 @@ angular
     }
 
     // Send a command to enable / disable raid mode
-    vm.toggleRaidMode = (enabled) => {
+    vm.toggleRaidMode = (enable) => {
       if (!editor) return
-      io.emit('toggle_raid_mode', enabled)
+      io.emit('toggle_raid_mode', enable)
     }
 
     vm.restart = () => {

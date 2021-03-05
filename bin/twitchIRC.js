@@ -8,14 +8,13 @@ const twitchMessages = require('./twitchMessages')
 const mongo = require('./mongo')
 const parser = require('./parser')
 const debug = require('debug')('streamInfo:twitchIRC')
+const raidMode = require('./raidmode')
 
 debug('Loading twitchIRC.js')
 
 config.twitch.nick = config.twitch.nick.toLowerCase()
 config.twitch.channel = `#${config.twitch.user.login}`
 config.twitch.oauth = `oauth:${config.twitch.oauth.replace('oauth:', '')}`
-
-let inRaidModeAuto = false
 
 // Set Twitch tmi options
 const tmiOptions = {
@@ -187,32 +186,12 @@ module.exports = (io) => {
         utils.trimDB(mongo.Hosts)
       })
       .catch(log.error)
-    raidModeAuto()
+    raidMode.auto()
   })
 
   twitch.on('chat', (channel, userstate, message) => {
     twitchMessages.process(channel, userstate, message, io, twitch)
   })
-
-  let followersTimer = null
-
-  // Auto raid mode
-  function raidModeAuto() {
-    if (inRaidModeAuto) return
-    inRaidModeAuto = true
-    say('!raidmode on (auto)')
-    const followersAmount = status.channel.followersonly
-    const followersEnabled = followersAmount !== -1
-    if (followersEnabled) say('/followersoff')
-    setTimeout(() => {
-      say('!raidmode off (auto)')
-      inRaidModeAuto = false
-    }, 1000 * 60 * 3)
-    if (followersTimer) clearTimeout(followersTimer)
-    followersTimer = setTimeout(() => {
-      if (followersEnabled) say(`/followers ${followersAmount}`)
-    }, 1000 * 60 * 10)
-  }
 
   function subscription(userstate) {
     const entry = new mongo.Subscriptions({ data: userstate })
@@ -403,11 +382,6 @@ module.exports = (io) => {
       if (data.command === 'slow' && data.enabled) command += ' 30'
       if (data.command === 'followers' && data.enabled) command += ' 10'
       say(command)
-    })
-
-    socket.on('toggle_raid_mode', (enabled) => {
-      const action = enabled ? 'on' : 'off'
-      say(`!raidmode ${action}`)
     })
   })
 }
