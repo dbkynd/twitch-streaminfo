@@ -30,91 +30,70 @@ pollStreamStatus()
 setInterval(pollStreamStatus, 1000 * 60)
 
 function pollStreamStatus() {
-  // See if this channel is hosting another channel
+  // Get the hosted channels stream data or our own
   request
     .get(
-      `https://tmi.twitch.tv/hosts?include_logins=1&host=${config.twitch.id}`
+      `https://api.twitch.tv/helix/streams?user_id=${liveStatus.targetId ||
+        config.twitch.id}&type=live`
     )
-    .then((hostResult) => {
-      const host = hostResult.body
-      // If there is a target_id the channel is hosting another
-      if (host.hosts[0].target_id) {
-        // Save that we are hosting
-        liveStatus.isHosting = true
-        // Save the hosted channel's id
-        liveStatus.targetId = host.hosts[0].target_id
-      } else {
-        // Save that we are NOT hosting
-        liveStatus.isHosting = false
-        // Clear the hosted channel's id
-        liveStatus.targetId = null
+    .set({
+      'Client-ID': config.twitch.app.client_id,
+      Authorization: `Bearer ${config.twitch.ps.access_token}`,
+    })
+    .then((streamResult) => {
+      const stream = utils.get(['body', 'data', 0], streamResult)
+      // Clear data if we are now hosting
+      if (liveStatus.isHosting) {
+        liveStatus.targetBody = stream
+        liveStatus.isOnline = false
+        liveStatus.showsOnline = false
+        liveStatus.timeStarted = null
+        liveStatus.timeStopped = null
+        liveStatus.body = null
+        return
       }
-      // Get the hosted channels stream data or our own
-      request
-        .get(
-          `https://api.twitch.tv/helix/streams?user_id=${liveStatus.targetId ||
-            config.twitch.id}&type=live`
-        )
-        .set({
-          'Client-ID': config.twitch.app.client_id,
-          Authorization: `Bearer ${config.twitch.ps.access_token}`,
-        })
-        .then((streamResult) => {
-          const stream = utils.get(['body', 'data', 0], streamResult)
-          // Clear data if we are now hosting
-          if (liveStatus.isHosting) {
-            liveStatus.targetBody = stream
+      liveStatus.targetBody = null
+      liveStatus.body = stream
+      if (stream) {
+        // Twitch sees channel as actively streaming
+        liveStatus.showsOnline = true
+        storeGame(stream)
+        storeMaxViewCount(stream.viewer_count)
+        if (liveStatus.isOnline) {
+          liveStatus.timeStopped = null
+        } else {
+          // Save that streamer is live
+          liveStatus.isOnline = true
+          // Save stream start time
+          liveStatus.timeStarted = moment(stream.started_at)
+            .utc()
+            .format()
+        }
+      } else {
+        // Twitch does not sees channel as actively streaming
+        liveStatus.showsOnline = false
+        // Don't need to do anything if we are already set to offline
+        if (!liveStatus.isOnline) {
+          return
+        }
+        if (liveStatus.timeStopped) {
+          if (
+            moment() >
+            moment(liveStatus.timeStopped).add(
+              config.minutesBeforeConsideredOffline,
+              'm'
+            )
+          ) {
+            // Enough time has past. Streamer likely has stopped streaming for the day.
             liveStatus.isOnline = false
-            liveStatus.showsOnline = false
             liveStatus.timeStarted = null
             liveStatus.timeStopped = null
-            liveStatus.body = null
-            return
           }
-          liveStatus.targetBody = null
-          liveStatus.body = stream
-          if (stream) {
-            // Twitch sees channel as actively streaming
-            liveStatus.showsOnline = true
-            storeGame(stream)
-            storeMaxViewCount(stream.viewer_count)
-            if (liveStatus.isOnline) {
-              liveStatus.timeStopped = null
-            } else {
-              // Save that streamer is live
-              liveStatus.isOnline = true
-              // Save stream start time
-              liveStatus.timeStarted = moment(stream.started_at)
-                .utc()
-                .format()
-            }
-          } else {
-            // Twitch does not sees channel as actively streaming
-            liveStatus.showsOnline = false
-            // Don't need to do anything if we are already set to offline
-            if (!liveStatus.isOnline) {
-              return
-            }
-            if (liveStatus.timeStopped) {
-              if (
-                moment() >
-                moment(liveStatus.timeStopped).add(
-                  config.minutesBeforeConsideredOffline,
-                  'm'
-                )
-              ) {
-                // Enough time has past. Streamer likely has stopped streaming for the day.
-                liveStatus.isOnline = false
-                liveStatus.timeStarted = null
-                liveStatus.timeStopped = null
-              }
-            } else {
-              // First stored stream drop
-              liveStatus.timeStopped = moment()
-            }
-          }
-        })
-        .catch(log.error)
+        } else {
+          // First stored stream drop
+          liveStatus.timeStopped = moment()
+        }
+      }
     })
     .catch(log.error)
 }
