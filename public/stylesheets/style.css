@@ -456,5 +456,5 @@ button:disabled {
 }
 
 .removed {
-  background: #670000;
+  background: #670000 !important;
 }
