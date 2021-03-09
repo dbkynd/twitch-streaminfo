@@ -8,6 +8,7 @@ const twitchMessages = require('./twitchMessages')
 const mongo = require('./mongo')
 const parser = require('./parser')
 const debug = require('debug')('streamInfo:twitchIRC')
+const subTimer = require('./subscriptionCheckTimer')
 
 debug('Loading twitchIRC.js')
 
@@ -259,6 +260,7 @@ module.exports = (io) => {
         `${subTier(userstate['msg-param-sub-plan'])} sub.`
     )
     subscription(userstate)
+    subTimer.addUser(userstate.id)
   })
 
   twitch.on(
@@ -279,6 +281,7 @@ module.exports = (io) => {
           )} sub. ${streakMonths} months in a row.`
       )
       subscription({ ...userstate, message: msg })
+      subTimer.addUser(userstate.id)
     }
   )
 

@@ -454,3 +454,7 @@ button:disabled {
 .hours {
   color: #6ee118;
 }
+
+.removed {
+  background: #670000;
+}

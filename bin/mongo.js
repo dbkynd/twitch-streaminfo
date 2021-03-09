@@ -68,6 +68,7 @@ const Subscriptions = mongoose.model(
     data: Object,
     recipients: Array,
     cleared: Boolean,
+    removed: Boolean,
   })
 )
 

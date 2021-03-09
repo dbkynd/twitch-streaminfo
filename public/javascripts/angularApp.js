@@ -121,6 +121,15 @@ angular
       window.location.reload()
     })
 
+    io.on('sub_removal_list', (subIdsArr) => {
+      $log.info('sub_removal_list', subIdsArr)
+      vm.subs.forEach((subEvent) => {
+        if (subIdsArr.includes(subEvent.twitchId)) {
+          subEvent.removed = true
+        }
+      })
+    })
+
     vm.followers = 0
 
     // New Follower Event

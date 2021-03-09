@@ -52,7 +52,7 @@
                         <span class="username">Subs</span>
                     </li>
                     <li ng-repeat="sub in ctrl.subs | orderBy:'-timestamp' track by sub._id" ng-click="ctrl.clearItem(sub, 'subscriptions')"
-                        ng-class="{ 'uncleared': !sub.cleared }">
+                        ng-class="{ 'uncleared': !sub.cleared, removed: sub.removed }">
                         <div class='time'>{{ctrl.time(sub.timestamp)}}</div>
                         <div class='message' ng-show="sub.type === 'subgift'">
                             <span class="gifter">{{sub.name}}</span> gifted:

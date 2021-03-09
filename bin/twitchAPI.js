@@ -79,6 +79,11 @@ module.exports = {
     const url = `https://api.twitch.tv/kraken/users/${userId}`
     return fetch(url, krakenHeaders())
   },
+
+  checkSubscriptions: (users) => {
+    const url = `https://api.twitch.tv/helix/subscriptions?broadcaster_id=${config.twitch.id}&${users}`
+    return fetch(url, helixHeaders())
+  },
 }
 
 function helixHeaders() {

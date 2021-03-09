@@ -58,8 +58,10 @@ module.exports = {
     return {
       _id: entry._id,
       cleared: entry.cleared,
+      removed: entry.removed,
       type: entry.data['msg-id'],
       name: utils.displayName(entry.data.login, entry.data['display-name']),
+      twitchId: entry.data['user-id'],
       recipientName: utils.displayName(
         entry.data['msg-param-recipient-user-name'],
         entry.data['msg-param-recipient-display-name']
