@@ -1,6 +1,6 @@
 const twitchAPI = require('./twitchAPI')
 const debug = require('debug')('streamInfo:subscriptionCheckTimer')
-const { Subscriptions } = require('mongo')
+const { Subscriptions } = require('./mongo')
 
 let _io
 const subs = {}
