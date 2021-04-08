@@ -54,8 +54,8 @@ module.exports = (io) => {
       delete banEventTimeoutCache.banned[data.target]
     }, 1000 * 10)
     log.info(`'${data.target}' was banned for: ${data.reason}`)
-    discordWebhooks.ban(data)
-    report.newReport(data.target)
+    // discordWebhooks.ban(data)
+    // report.newReport(data.target)
   })
 
   ps.on('unban', async (data) => {
@@ -65,6 +65,6 @@ module.exports = (io) => {
       delete banEventTimeoutCache.unbanned[data.target]
     }, 1000 * 10)
     log.info(`'${data.target}' was un-banned`)
-    discordWebhooks.unban(data)
+    // discordWebhooks.unban(data)
   })
 }
