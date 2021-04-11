@@ -340,11 +340,6 @@ module.exports = (io) => {
       .catch((err) => {
         log.error('Cheer Save to DB Error: ', err)
       })
-    mongo.Latest.findOneAndUpdate(
-      { name: 'cheer' },
-      { name: 'cheer', data },
-      { upsert: true }
-    ).catch(log.error)
   })
 
   // Connect to Twitch IRC

@@ -52,10 +52,5 @@ module.exports = (io) => {
         utils.trimDB(mongo.Tips)
       })
       .catch(log.error)
-    mongo.Latest.findOneAndUpdate(
-      { name: 'tip' },
-      { name: 'tip', data },
-      { upsert: true }
-    ).catch(log.error)
   })
 }
