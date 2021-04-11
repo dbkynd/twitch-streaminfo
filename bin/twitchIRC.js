@@ -190,7 +190,6 @@ module.exports = (io) => {
       .catch((err) => {
         log.error('Sub Save to DB Error: ', err)
       })
-    saveLastSub(userstate)
   }
 
   function isDuplicate(userstate) {
@@ -200,14 +199,6 @@ module.exports = (io) => {
       delete lastSubs[id]
     }, 2000)
     return false
-  }
-
-  function saveLastSub(userstate) {
-    mongo.Latest.findOneAndUpdate(
-      { name: 'sub' },
-      { name: 'sub', data: userstate },
-      { upsert: true }
-    ).catch(log.error)
   }
 
   twitch.on('subscription', (channel, username, plan, msg, userstate) => {
@@ -272,7 +263,6 @@ module.exports = (io) => {
           massGifts[userstate['user-id']].recipients.length ===
           massGifts[userstate['user-id']].targetLength
         ) {
-          saveLastSub(userstate)
           massGifts[userstate['user-id']].save()
         }
         return
