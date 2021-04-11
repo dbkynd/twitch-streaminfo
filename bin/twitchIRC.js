@@ -118,22 +118,6 @@ module.exports = (io) => {
     })
   })
 
-  // Our mod bot was modded in our channel
-  twitch.on('mod', (channel, username) => {
-    if (username.toLowerCase() !== config.botName.toLowerCase()) return
-    log.info(`${username} joined the channel (modded)`)
-    status.app.chatBot = true
-    io.emit('status', { app: { chatBot: true } })
-  })
-
-  // Our mod bot was unmodded in our channel
-  twitch.on('unmod', (channel, username) => {
-    if (username.toLowerCase() !== config.botName.toLowerCase()) return
-    log.info(`${username} parted the channel (unmodded)`)
-    status.app.chatBot = false
-    io.emit('status', { app: { chatBot: false } })
-  })
-
   // Someone hosted our channel
   twitch.on('hosted', async (channel, username, viewers, auto) => {
     // eslint-disable-line no-unused-vars

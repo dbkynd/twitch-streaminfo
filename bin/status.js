@@ -6,7 +6,6 @@ module.exports = {
   app: {
     tipsWs: null,
     twitchIrc: null,
-    chatBot: null,
   },
   channel: {
     emoteonly: null,

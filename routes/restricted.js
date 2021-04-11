@@ -9,7 +9,6 @@ router.get('/', (req, res, next) => {
   // eslint-disable-line no-unused-vars
   res.render('index', {
     title: config.pageTitle,
-    botName: config.botName,
     editor: Boolean(config.allowedToEdit.indexOf(req.user) !== -1),
   })
 })
