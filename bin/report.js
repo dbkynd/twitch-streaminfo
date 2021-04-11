@@ -26,7 +26,11 @@ module.exports = {
       // Investigate each user
       reported.forEach(async (x) => {
         // Remove from database if expired
-        if (moment(x.created_at).add(7, 'd').valueOf() < Date.now()) {
+        if (
+          moment(x.created_at)
+            .add(7, 'd')
+            .valueOf() < Date.now()
+        ) {
           debug(
             `${x.username} has expired with no ban. Removing from the database.`
           )
