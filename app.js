@@ -28,7 +28,6 @@ const io = require('./bin/socket')(server)
 const mongo = require('./bin/mongo')
 
 require('./bin/streamElements')(io)
-require('./bin/twitchPS')(io)
 require('./bin/twitchIRC')(io)
 const report = require('./bin/report')
 report.startCheck(io)

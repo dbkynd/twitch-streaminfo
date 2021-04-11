@@ -5,7 +5,6 @@ debug('Loading status.js')
 module.exports = {
   app: {
     tipsWs: null,
-    twitchPs: null,
     twitchIrc: null,
     chatBot: null,
   },
