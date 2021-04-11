@@ -138,15 +138,6 @@ const Counts = mongoose.model(
   })
 )
 
-// Latest Events
-const Latest = mongoose.model(
-  'latests',
-  new mongoose.Schema({
-    name: String,
-    data: Object,
-  })
-)
-
 const ClipChannels = mongoose.model(
   'allowed_clip_channels',
   new mongoose.Schema({
@@ -193,7 +184,6 @@ module.exports = {
   TwitchGames,
   Reported,
   Counts,
-  Latest,
   ClipChannels,
   SuspiciousTerms,
   ArchivedVideoLengths,

@@ -79,21 +79,6 @@ router.get('/games', (req, res, next) => {
     })
 })
 
-router.get('/latestSub', (req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  res.render('latestSub')
-})
-
-router.get('/latestTip', (req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  res.render('latestTip')
-})
-
-router.get('/latestCheer', (req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  res.render('latestCheer')
-})
-
 router.get('/time', (req, res, next) => {
   // eslint-disable-line no-unused-vars
   res.send(
@@ -235,8 +220,9 @@ router.get('/clips', async (req, res, next) => {
       return res
         .status(200)
         .send(
-          `Clips from ${targetData.display_name ||
-            target.login} are already allowed.`
+          `Clips from ${
+            targetData.display_name || target.login
+          } are already allowed.`
         )
     } else {
       // Save a new record
@@ -246,8 +232,9 @@ router.get('/clips', async (req, res, next) => {
       return res
         .status(200)
         .send(
-          `Clips from ${targetData.display_name ||
-            target.login} are now allowed.`
+          `Clips from ${
+            targetData.display_name || target.login
+          } are now allowed.`
         )
     }
   } else if (action === 'deny') {
@@ -255,8 +242,9 @@ router.get('/clips', async (req, res, next) => {
       return res
         .status(200)
         .send(
-          `Clips from ${targetData.display_name ||
-            target.login} are already denied.`
+          `Clips from ${
+            targetData.display_name || target.login
+          } are already denied.`
         )
     } else {
       // Delete the existing record
@@ -264,8 +252,9 @@ router.get('/clips', async (req, res, next) => {
       return res
         .status(200)
         .send(
-          `Clips from ${targetData.display_name ||
-            target.login} are now denied.`
+          `Clips from ${
+            targetData.display_name || target.login
+          } are now denied.`
         )
     }
   }
