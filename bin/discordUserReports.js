@@ -3,7 +3,7 @@ const config = require('../config')
 const Discord = require('discord.js')
 
 const [, hookId, hookToken] = config.discordUserReportWebhookUrl.match(
-  /https:\/\/discordapp\.com\/api\/webhooks\/(\d+)\/(.*)/
+  /https:\/\/discord\.com\/api\/webhooks\/(\d+)\/(.*)/
 )
 const hook = new Discord.WebhookClient(hookId, hookToken)
 
