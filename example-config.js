@@ -12,9 +12,6 @@ module.exports = {
       client_id: '',
       client_secret: '',
       callback_url: '',
-    },
-    ps: {
-      id: '',
       access_token: '',
     },
     nick: '',
@@ -26,4 +23,14 @@ module.exports = {
     token: '',
   },
   minutesBeforeConsideredOffline: 15,
+  debug: false,
+  lastfm: {
+    apiKey: '',
+  },
+  discord: {
+    susFollowerWebhookUrl: '',
+    mentionRoleId: '',
+  },
+  discordUserReportWebhookUrl: '',
+  moderationEventWebhookUrl: '',
 }
