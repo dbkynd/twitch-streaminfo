@@ -33,12 +33,13 @@ function pollStreamStatus() {
   // Get the hosted channels stream data or our own
   request
     .get(
-      `https://api.twitch.tv/helix/streams?user_id=${liveStatus.targetId ||
-        config.twitch.id}&type=live`
+      `https://api.twitch.tv/helix/streams?user_id=${
+        liveStatus.targetId || config.twitch.id
+      }&type=live`
     )
     .set({
       'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
+      Authorization: `Bearer ${config.twitch.app.access_token}`,
     })
     .then((streamResult) => {
       const stream = utils.get(['body', 'data', 0], streamResult)
@@ -65,9 +66,7 @@ function pollStreamStatus() {
           // Save that streamer is live
           liveStatus.isOnline = true
           // Save stream start time
-          liveStatus.timeStarted = moment(stream.started_at)
-            .utc()
-            .format()
+          liveStatus.timeStarted = moment(stream.started_at).utc().format()
         }
       } else {
         // Twitch does not sees channel as actively streaming
@@ -167,7 +166,7 @@ module.exports = (io) => {
             `?client_id=${config.twitch.app.client_id}&api_version=5`,
           {
             headers: {
-              Authorization: `Bearer ${config.twitch.ps.access_token}`,
+              Authorization: `Bearer ${config.twitch.app.access_token}`,
             },
           }
         )

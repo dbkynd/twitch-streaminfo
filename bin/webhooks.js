@@ -17,7 +17,7 @@ function subscribe() {
     .post('https://api.twitch.tv/helix/webhooks/hub')
     .set({
       'Client-ID': config.twitch.app.client_id,
-      Authorization: `Bearer ${config.twitch.ps.access_token}`,
+      Authorization: `Bearer ${config.twitch.app.access_token}`,
     })
     .send({
       'hub.mode': 'subscribe',

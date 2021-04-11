@@ -30,7 +30,7 @@ module.exports = {
   getTokenData: () => {
     const url = 'https://id.twitch.tv/oauth2/validate'
     const headers = {
-      Authorization: `OAuth ${config.twitch.ps.access_token}`,
+      Authorization: `OAuth ${config.twitch.app.access_token}`,
     }
     return fetch(url, headers)
   },
@@ -84,14 +84,14 @@ module.exports = {
 function helixHeaders() {
   return {
     'Client-ID': config.twitch.app.client_id,
-    Authorization: `Bearer ${config.twitch.ps.access_token}`,
+    Authorization: `Bearer ${config.twitch.app.access_token}`,
   }
 }
 
 function krakenHeaders() {
   return {
     'Client-ID': config.twitch.app.client_id,
-    Authorization: `OAuth ${config.twitch.ps.access_token}`,
+    Authorization: `OAuth ${config.twitch.app.access_token}`,
     Accept: 'application/vnd.twitchtv.v5+json',
   }
 }

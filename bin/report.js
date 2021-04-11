@@ -26,11 +26,7 @@ module.exports = {
       // Investigate each user
       reported.forEach(async (x) => {
         // Remove from database if expired
-        if (
-          moment(x.created_at)
-            .add(7, 'd')
-            .valueOf() < Date.now()
-        ) {
+        if (moment(x.created_at).add(7, 'd').valueOf() < Date.now()) {
           debug(
             `${x.username} has expired with no ban. Removing from the database.`
           )
@@ -42,7 +38,7 @@ module.exports = {
           .get(`https://api.twitch.tv/kraken/channels/${x.username}`)
           .set({
             'Client-ID': config.twitch.app.client_id,
-            Authorization: `Bearer ${config.twitch.ps.access_token}`,
+            Authorization: `Bearer ${config.twitch.app.access_token}`,
           })
           .catch(async (banned) => {
             // 422 UNPROCESSABLE ENTRY when the channel is removed.
