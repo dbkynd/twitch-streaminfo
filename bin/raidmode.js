@@ -20,8 +20,10 @@ function init(io) {
 
   _io.on('connection', (socket) => {
     socket.on('toggle_raid_mode', (enable) => {
-      // const action = enable ? 'on' : 'off' // TODO
-      // say(`!raidmode ${action}`)
+      toggle(enable).then(() => {
+        if (enable) say('Raidmode has been toggled on.')
+        else say('Raidmode has been toggled off.')
+      })
     })
   })
 }
@@ -86,22 +88,19 @@ function say(message) {
     .catch()
 }
 
-let followersTimer, raidModeOffTimer, followersAmount
+let followersTimer, raidModeOffTimer
 let inAutoRaidMode = false
-let hadFollowersOn = false
 
-// Auto raid mode
 function autoRaidMode() {
-  // Reset the timers if already in auto RaidMode
   if (inAutoRaidMode) {
     timers()
     return
   }
   inAutoRaidMode = true
-  toggle(true)
-  followersAmount = status.channel.followersonly
-  hadFollowersOn = followersAmount !== -1
-  if (hadFollowersOn) say('/followersoff')
+  toggle(true).then(() => {
+    say('Raidmode has been enabled.')
+    say('/followersoff')
+  })
   timers()
 }
 
@@ -109,41 +108,34 @@ function timers() {
   if (raidModeOffTimer) clearTimeout(raidModeOffTimer)
   if (followersTimer) clearTimeout(followersTimer)
   raidModeOffTimer = setTimeout(() => {
-    toggle(false)
-    inAutoRaidMode = false
-  }, 1000 * 60 * 5)
-
-  // Don't set followers timers if followers was off initially
-  if (!hadFollowersOn) return
-
-  // Enable followers-only after 10 minutes
-  followersTimer = setTimeout(() => {
-    say('/followers')
     say(
-      `Enabled followers-only mode. Please follow to continue chatting. ${followersAmount} minute followers-only will be enabled in 10 minutes.`
+      '10-minute followers-only mode will be enabled in 10 minutes. Please follow to continue chatting.'
     )
-  }, 1000 * 60 * 10)
+    toggle(false).then(() => {
+      inAutoRaidMode = false
+    })
+  }, 1000 * 60 * 3)
 
   followersTimer = setTimeout(() => {
-    say(`/followers ${followersAmount}`)
-  }, 1000 * 60 * 20)
+    say('/followers 10')
+  }, 1000 * 60 * 13)
 }
 
-function toggle(enabled) {
-  setFilter(!enabled)
+async function toggle(enable) {
+  return setFilter(!enable)
     .then(() => {
-      status.raidMode = enabled
-      log.info(`Raidmode set. Enabled: ${status.raidMode}`)
-      _io.emit('status', { raidMode: status.raidMode })
-      say(`Raidmode has been ${enabled ? 'enabled' : 'disabled'}.`)
+      status.raidMode = enable
+      log.info(`Raidmode toggled. Enabled: ${status.raidMode}`)
+      if (_io) _io.emit('status', { raidMode: status.raidMode })
     })
     .catch((err) => {
       log.error(err)
-      say(`There was an error ${enabled ? 'enabling' : 'disabling'} Raidmode.`)
+      say(`There was an error ${enable ? 'enabling' : 'disabling'} Raidmode.`)
     })
 }
 
 module.exports = {
   init,
   auto: autoRaidMode,
+  setFilter,
 }

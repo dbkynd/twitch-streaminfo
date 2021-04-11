@@ -329,5 +329,44 @@ module.exports = (io) => {
     io.emit('sub_games_advance_queue', req.headers)
   })
 
+  router.get('/raidmode', (req, res) => {
+    const action = req.query.q || 'on'
+    switch (action.toLowerCase()) {
+      case 'on':
+      case 'enable':
+        toggle(true)
+        break
+      case 'off':
+      case 'disable':
+        toggle(false)
+        break
+      default:
+        return res.sendStatus(400)
+    }
+
+    function toggle(enabled) {
+      raidmode
+        .setFilter(!enabled)
+        .then(() => {
+          status.raidMode = enabled
+          log.info(`RaidMode set. Enabled: ${status.raidMode}`)
+          io.emit('status', { raidMode: status.raidMode })
+          res
+            .status(200)
+            .send(`Raidmode has been ${enabled ? 'enabled' : 'disabled'}.`)
+        })
+        .catch((err) => {
+          log.error(err)
+          res
+            .status(200)
+            .send(
+              `There was an error ${
+                enabled ? 'enabling' : 'disabling'
+              } Raidmode.`
+            )
+        })
+    }
+  })
+
   return router
 }
