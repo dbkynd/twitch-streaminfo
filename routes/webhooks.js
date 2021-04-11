@@ -35,8 +35,12 @@ router.post('/twitch/following', async (req, res, next) => {
   // emit that we got a new follower to the client page
   req.io.emit('following', data)
   // check for suspicious terms in the user name
-  const query = `{"$where": "function() { return '${data.from_name.toLowerCase()}'.includes(this.term) }"}`
-  const match = await req.db.SuspiciousTerms.findOne(JSON.parse(query))
+  const terms = await req.db.SuspiciousTerms.find()
+  const match = terms.filter((term) =>
+    data.from_name.toLowerCase().includes(term.term)
+  )
+  // const query = `{"$where": "function() { return '${data.from_name.toLowerCase()}'.includes(this.term) }"}`
+  // const match = await req.db.SuspiciousTerms.findOne(JSON.parse(query))
   // stop if no matching terms
   if (!match || match.length === 0) return
   // check the account creation date of the user
