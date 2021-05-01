@@ -17,6 +17,7 @@ const path = require('path')
 const multer = require('multer')
 const rateLimit = require('express-rate-limit')
 const axios = require('axios')
+const multi = require('../bin/multi')
 
 const reportLimiter = rateLimit({
   windowMs: 1000 * 60 * 60, // 1 hour
@@ -277,11 +278,9 @@ router.get('/multi', async (req, res, next) => {
     )
     const multiCommand = commands.filter((x) => x.command === 'multi')
     if (!multiCommand.length) return res.sendStatus(404)
-    const multiReply = multiCommand[0].reply
-      .toLowerCase()
-      .replace(/^.*http/, 'http')
-      .replace(/annemunition\/?/, '')
-    res.send(multiReply)
+    const response = multi(multiCommand[0].reply)
+    if (!response) return res.sendStatus(500)
+    res.send(response)
   } catch (e) {
     next(e)
   }
