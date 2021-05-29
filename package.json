@@ -54,7 +54,7 @@
     "twitchps": "github:dbkynd/twitchps",
     "winston": "^2.4.4",
     "winston-daily-rotate-file": "^1.4.6",
-    "ws": "^7.2.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
