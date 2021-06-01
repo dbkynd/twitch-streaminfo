@@ -327,6 +327,7 @@ module.exports = (io) => {
         userstate['display-name']
       )} has just cheered with ${userstate.bits_used} bits.`
     )
+    if (userstate['user-id'] === '251095562') return // Coil_Twitch_Bot
     const data = { ...userstate, message }
     const entry = new mongo.Cheers({ data })
     const parsed = parser.cheer(entry)
